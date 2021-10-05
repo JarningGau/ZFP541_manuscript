@@ -1,0 +1,1072 @@
+---
+title: "figures"
+author: "Jarning"
+date: "2021/4/30"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(latex2exp)
+options(stringsAsFactors = FALSE)
+tidyverse_conflicts()
+```
+
+```{r}
+theme_set(
+  theme_bw(base_size = 15) + 
+    theme(axis.line = element_line(color="black"),
+          axis.text = element_text(color = "black"),
+          plot.title = element_text(hjust = .5, face = "bold"),
+          panel.grid = element_blank(),
+          legend.background = element_rect(fill=alpha('white', 0))
+    )
+)
+```
+
+## Figure 3
+
+> ZFP541 negatively regulates the pre-pachytene transcriptional programs in pachytene spermatocytes
+
+### PCA plot (3A)
+```{r, fig.width=10, fig.height=4}
+data.use <- read.table("~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.metadata.tsv", sep = "\t")
+
+data.use <- data.use %>% mutate(
+  group = factor(group, levels = c("WT,eP","Zfp541(-/-),eP","WT,eD","Zfp541(-/-),eD")),
+  group2 = factor(paste(genotype, time.point, sep = ","), levels = c("WT,260h","Zfp541(-/-),260h","WT,360h","Zfp541(-/-),360h")),
+  cluster.annotation = factor(cluster.annotation, levels = c("pre-meiotic", "early pachytene", "late pachytene"))
+) %>% 
+  filter(cluster.annotation != "pre-meiotic")
+
+p <- ggplot(data.use, aes(PC_1, PC_2, color = cluster.annotation)) + 
+  geom_point(inherit.aes = F, data = data.use %>% dplyr::select(PC_1, PC_2), aes(PC_1, PC_2), color="grey", size = .2) + 
+  geom_point(shape=16, size = 1) + 
+  scale_color_manual(values = c("#A05F23","#13816E")) + 
+  guides(color = guide_legend(title = "Stage", override.aes = list(size = 3))) + 
+  facet_wrap(~group2, ncol = 4) + 
+  theme(legend.position = "top", 
+        strip.text = element_blank(),
+        strip.background = element_blank())
+
+png("../figures/Figure3A.png", width = 10, height = 4, units = "in", res = 600)
+p
+dev.off()
+```
+
+### MA plot (3B)
+
+```{r}
+MAPlot <- function(data.use, genes.show, title) {
+  data.use <- data.use %>% 
+    filter(!is.na(change)) %>% 
+    mutate(my.color = ifelse(change!="NS", change, "unchange"),
+           my.size = ifelse(my.color == "unchange", .2, 1),
+           my.alpha = ifelse(my.color == "unchange", .2, .5),
+           my.label = ifelse(gene %in% genes.show, gene, NA)) %>% 
+    mutate(my.color = factor(my.color, levels = c("up in KO", "unchange", "down in KO")))
+  
+  data.use %>% 
+    ggplot(aes(baseMean, log2FoldChange, color=my.color, fill=my.color)) + 
+    geom_point(size=data.use$my.size, alpha=data.use$my.alpha) + 
+    geom_point(data = . %>% filter(!is.na(my.label)), size=2, shape = 21, color="black") + 
+    scale_color_manual(values = c("#F46D43","grey","#74ADD1")) + 
+    scale_fill_manual(values = c("#F46D43","grey","#74ADD1")) + 
+    ggrepel::geom_text_repel(data = . %>% filter(!is.na(my.label)), aes(baseMean, log2FoldChange, label=my.label), show.legend = F, inherit.aes = F, max.iter = 20000, fontface = "italic") + 
+    labs(x="Mean expression level", y="log2 fold change", title=title) + 
+    scale_x_log10() + 
+    theme(legend.title = element_blank())
+}
+```
+
+
+```{r, fig.width=5, fig.height=4}
+data.use <- read.table("../data/WT_vs_Z5KO.lP.DEGs.ss2.tsv", sep = "\t")
+data.use <- data.use %>% 
+  mutate(gene = rownames(.)) %>% 
+  mutate(gene = plyr::mapvalues(gene, from = c("Gm960","Ccdc36"), to = c("Top6bl", "Iho1")))
+
+#dsb.genes <- c("Prdm9","Spo11","Gm960","Mei1","Mei4","Hormad1","Ccdc36(Iho1)","Rec114","Ankrd31")
+dsb.genes <- c("Prdm9","Spo11","Top6bl","Mei1","Mei4","Hormad1","Iho1","Rec114","Ankrd31")
+#meiosis.regulators <- c("Rxra","Rarg","Ncoa1","Ncoa2","Gm4969","Stra8","Meioc","Ythdc2")
+p <- MAPlot(data.use, genes.show = dsb.genes, title = "")
+p <- p + theme(legend.position = c(0.83,0.85))
+
+png("../figures/Figure3B.png", width = 5, height = 4, units = "in", res = 600)
+p
+dev.off()
+```
+
+### 3C: DSB genes
+
+```{r}
+library(ggsignif)
+library(Seurat)
+```
+
+```{r}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_final.rds")
+seu$group2 = factor(paste(seu$genotype, seu$abbr.cell_type, sep = ","), levels = c("WT,eP","Zfp541(-/-),eP","WT,lP","Zfp541(-/-),lP"))
+
+eP.DEGs <- read.table("../data/WT_vs_Z5KO.eP.DEGs.ss2.tsv", sep = "\t")
+lP.DEGs <- read.table("../data/WT_vs_Z5KO.lP.DEGs.ss2.tsv", sep = "\t")
+```
+
+```{r, fig.width=5, fig.height=4}
+dsb.genes <- c("Prdm9","Gm960","Mei1","Mei4","Hormad1")
+
+genes.use <- c(dsb.genes)
+DefaultAssay(seu) <- "RNA"
+data.use <- FetchData(seu, vars = c("group2", genes.use))
+
+data.signif.1 <- data.frame(
+  padj=eP.DEGs[genes.use, ]$padj, 
+  gene=factor(genes.use, levels=genes.use),
+  y=sapply(genes.use, function(xx) max(data.use[,xx]))
+)
+data.signif.1$padj <- ifelse(is.na(data.signif.1$padj), 1, data.signif.1$padj)
+
+data.signif.2 <- data.frame(
+  padj=lP.DEGs[genes.use, ]$padj, 
+  gene=factor(genes.use, levels=genes.use),
+  y=sapply(genes.use, function(xx) max(data.use[,xx]))
+)
+data.signif.2$padj <- ifelse(is.na(data.signif.2$padj), 1, data.signif.2$padj)
+
+alias <- c("Top6bl")
+names(alias) <- c("Gm960")
+data.signif.1$gene <- plyr::mapvalues(x=data.signif.1$gene, from=names(alias), to = alias)
+data.signif.2$gene <- plyr::mapvalues(x=data.signif.2$gene, from=names(alias), to = alias)
+genes.use <- plyr::mapvalues(x=genes.use, from=names(alias), to = alias)
+data.use <- data.use %>% 
+  pivot_longer(cols = 2:ncol(.), names_to = "gene", values_to = "expr") %>% 
+  mutate(gene = plyr::mapvalues(x=gene, from=names(alias), to = alias)) %>% 
+  mutate(gene = factor(gene, levels = genes.use))
+
+p <- data.use %>% 
+  ggplot(aes(group2, expr)) + 
+  geom_violin(aes(color=group2, fill=group2), scale = "width") + geom_jitter(size = .1, alpha=.2) + 
+  geom_signif(data = data.signif.1, 
+              aes(y_position=y-0.3, xmin=1, xmax=2, annotations=formatC(padj, 1)), manual = T) + 
+  geom_signif(data = data.signif.2, 
+              aes(y_position=y-0.3, xmin=3, xmax=4, annotations=formatC(padj, 1)), manual = T) + 
+  facet_wrap(~gene, scales = "free_y", nrow = 2) + 
+  scale_fill_manual(values = c("#A6611A", "#DFC27D", "#018571", "#80CDC1")) + 
+  scale_color_manual(values = c("#A6611A", "#DFC27D", "#018571", "#80CDC1")) + 
+  guides(color=guide_legend(nrow = 2), fill=guide_legend(nrow = 2)) + 
+  labs(x="", y="log(CPM/10+1)") + 
+  theme(legend.position = "bottom", 
+        legend.title = element_blank(),
+        strip.text = element_text(face = "italic"),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+pdf("../figures/Figure3C.lgd.pdf", width = 5, height = 4)
+lgd <- cowplot::get_legend(p)
+cowplot::plot_grid(lgd)
+dev.off()
+
+png("../figures/Figure3C.png", width = 5, height = 4, units = "in", res = 600)
+p + theme(legend.position = "none")
+dev.off()
+```
+
+### 3D: the meiotic program
+
+```{r, fig.width=13, fig.height=5}
+tfs <- c("Gm4969","Rxra","Rarg","Ncoa1","Ncoa2","Ythdc2")
+downstream <- c("Zcwpw1", "Mcmdc2", "Rad51", "Hfm1", "Rnf212", "Msh5", "Tex15", "4930447C04Rik", "Syce3")
+
+genes.use <- c(downstream, tfs)
+DefaultAssay(seu) <- "RNA"
+data.use <- FetchData(seu, vars = c("group2", genes.use))
+
+data.signif.1 <- data.frame(
+  padj=eP.DEGs[genes.use, ]$padj, 
+  gene=factor(genes.use, levels=genes.use),
+  y=sapply(genes.use, function(xx) max(data.use[,xx]))
+)
+data.signif.1$padj <- ifelse(is.na(data.signif.1$padj), 1, data.signif.1$padj)
+
+data.signif.2 <- data.frame(
+  padj=lP.DEGs[genes.use, ]$padj, 
+  gene=factor(genes.use, levels=genes.use),
+  y=sapply(genes.use, function(xx) max(data.use[,xx]))
+)
+data.signif.2$padj <- ifelse(is.na(data.signif.2$padj), 1, data.signif.2$padj)
+
+alias <- c("Six6os1", "Meiosin")
+names(alias) <- c("4930447C04Rik", "Gm4969")
+data.signif.1$gene <- plyr::mapvalues(x=data.signif.1$gene, from=names(alias), to = alias)
+data.signif.2$gene <- plyr::mapvalues(x=data.signif.2$gene, from=names(alias), to = alias)
+genes.use <- plyr::mapvalues(x=genes.use, from=names(alias), to = alias)
+
+p <- data.use %>% 
+  pivot_longer(cols = 2:ncol(.), names_to = "gene", values_to = "expr") %>% 
+  mutate(gene = plyr::mapvalues(x=gene, from=names(alias), to = alias)) %>% 
+  mutate(gene = factor(gene, levels = genes.use)) %>% 
+  ggplot(aes(group2, expr)) + 
+  geom_violin(aes(color=group2, fill=group2), scale = "width") + 
+  geom_jitter(size = .1, alpha=.2) + 
+  geom_signif(data = data.signif.1, 
+              aes(y_position=y-0.2, xmin=1, xmax=2, annotations=formatC(padj, 1)), manual = T) + 
+  geom_signif(data = data.signif.2, 
+              aes(y_position=y-0.2, xmin=3, xmax=4, annotations=formatC(padj, 1)), manual = T) + 
+  facet_wrap(~gene, scales = "free_y", nrow = 2) + 
+  scale_fill_manual(values = c("#A6611A", "#DFC27D", "#018571", "#80CDC1")) + 
+  scale_color_manual(values = c("#A6611A", "#DFC27D", "#018571", "#80CDC1")) + 
+  labs(x="", y="log(CPM/10+1)") +
+  theme(legend.position = "bottom", 
+        legend.title = element_blank(),
+        strip.text = element_text(face = "italic"),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+png("../figures/Figure3D.png", width = 13, height = 5, units = "in", res = 600)
+p + theme(legend.position = "none")
+dev.off()
+```
+
+
+### 3E: spermatogonia genes
+```{r, fig.width=4, fig.height=4}
+genes.use <- c("Kit", "Uchl1", "Dnmt3b", "Chd7")
+
+DefaultAssay(seu) <- "RNA"
+data.use <- FetchData(seu, vars = c("group2", genes.use))
+
+data.signif.1 <- data.frame(
+  padj=eP.DEGs[genes.use, ]$padj, 
+  gene=factor(genes.use, levels=genes.use),
+  y=sapply(genes.use, function(xx) max(data.use[,xx]))
+)
+data.signif.1$padj <- ifelse(is.na(data.signif.1$padj), 1, data.signif.1$padj)
+
+data.signif.2 <- data.frame(
+  padj=lP.DEGs[genes.use, ]$padj, 
+  gene=factor(genes.use, levels=genes.use),
+  y=sapply(genes.use, function(xx) max(data.use[,xx]))
+)
+data.signif.2$padj <- ifelse(is.na(data.signif.2$padj), 1, data.signif.2$padj)
+
+alias <- c("Meiosin")
+names(alias) <- c("Gm4969")
+data.signif.1$gene <- plyr::mapvalues(x=data.signif.1$gene, from=names(alias), to = alias)
+data.signif.2$gene <- plyr::mapvalues(x=data.signif.2$gene, from=names(alias), to = alias)
+genes.use <- plyr::mapvalues(x=genes.use, from=names(alias), to = alias)
+data.use <- data.use %>% 
+  pivot_longer(cols = 2:ncol(.), names_to = "gene", values_to = "expr") %>% 
+  mutate(gene = plyr::mapvalues(x=gene, from=names(alias), to = alias)) %>% 
+  mutate(gene = factor(gene, levels = genes.use))
+
+p <- data.use %>% 
+  ggplot(aes(group2, expr)) + 
+  geom_violin(aes(color=group2, fill=group2), scale = "width") + geom_jitter(size = .1, alpha=.2) + 
+  geom_signif(data = data.signif.1, 
+              aes(y_position=y-0.3, xmin=1, xmax=2, annotations=formatC(padj, 1)), manual = T) + 
+  geom_signif(data = data.signif.2, 
+              aes(y_position=y-0.3, xmin=3, xmax=4, annotations=formatC(padj, 1)), manual = T) + 
+  facet_wrap(~gene, scales = "free_y", nrow = 2) + 
+  scale_fill_manual(values = c("#A6611A", "#DFC27D", "#018571", "#80CDC1")) + 
+  scale_color_manual(values = c("#A6611A", "#DFC27D", "#018571", "#80CDC1")) + 
+  guides(color=guide_legend(nrow = 2), fill=guide_legend(nrow = 2)) + 
+  labs(x="", y="log(CPM/10+1)") + 
+  theme(legend.position = "bottom", 
+        legend.title = element_blank(),
+        strip.text = element_text(face = "italic"),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+png("../figures/Figure3E.png", width = 4, height = 4, units = "in", res = 600)
+p + theme(legend.position = "none")
+dev.off()
+```
+
+### 3F: Signature compare (Heatmap, 10x)
+
+```{r}
+library(ComplexHeatmap)
+library(circlize)
+signatures <- c(
+  "31P: SSC",
+  "31N: Diff.Spg",
+  "33N: broad Spg",
+  "2P: B.Spg double peak",
+  "2N: B.Spg single peak",
+  "5N: (pre)Leptotene",
+  "44N: Zygotene",
+  "38P: MSCI",
+  "27P: early General",
+  "23P: Z-P",
+  "13N: early Pachytene",
+  "39N: late Pachytene",
+  "20N: Meiotic Division"
+)
+```
+
+```{r}
+data.use <- read_tsv("../data/WT_vs_Z5KO.10x.gene_module.tsv")
+
+data.2 <- data.use %>% 
+  pivot_wider(id_cols = stage, names_from = "group", values_from = "t")
+rn <- data.2$stage
+data.2$stage <- NULL
+data.2 <- as.matrix(data.2)
+rownames(data.2) <- rn
+data.ht <- data.2
+data.ht <- data.ht[!is.na(rowSums(data.ht)), ]
+colnames(data.ht) <- signatures
+
+data.ht <- data.ht[, setdiff(colnames(data.ht), c("27P: early General","2N: B.Spg single peak","23P: Z-P"))]
+data.ht <- data.ht[rownames(data.ht)[-nrow(data.ht)], ]
+```
+
+```{r, fig.width=6, fig.height=5}
+col_range = c(-10,0,20)
+col_fun <- colorRamp2(col_range, c("blue","white","red"))
+at = seq(-10, 20, by = 5)
+lgd = Legend(at = at, title = "t", border="black", legend_gp = gpar(fill = col_fun(at)))
+
+ht <- Heatmap(data.ht, cluster_rows = F, cluster_columns = F, column_names_rot = -90,
+              col = col_fun,
+              name = "t",
+              show_heatmap_legend = FALSE,
+              cell_fun = function(j, i, x, y, width, height, fill) {
+                grid.rect(x = x, y = y, width = width, height = height, gp = gpar(col = "black", fill = NA))
+                grid.text(sprintf("%.1f", data.ht[i, j]), x, y, gp = gpar(fontsize = 10))
+              })
+
+pdf("../figures/Figure3F.pdf", width = 6, height = 5)
+draw(ht, heatmap_legend_list = list(lgd))
+dev.off()
+```
+
+## Figure 4
+
+> ZFP541 achieves its repression role via maintaining the silenced state of pre-pachytene transcriptional programs.
+
+```{r}
+seu <- readRDS("~/data/data3/jarning/seq-data/SHIP.10X/seu.rm_doublets.addMS.rds")
+cluster.annotation <- read_tsv("../../zhangxinxia_scrna/analysis_SHIPC/clusters.annotations.txt")
+seu$annotation <- plyr::mapvalues(seu$seurat_clusters.reorder, cluster.annotation$cluster_index, cluster.annotation$annotation)
+```
+
+### 4A: principle curve
+
+```{r}
+p.curve <- readRDS("~/data/data3/jarning/seq-data/SHIP.10X/p.curve.rds")
+
+get_path <- function(pc.curve, df="7"){
+  df = paste0("df_", df)
+  pc.curve[[df]]$s[pc.curve[[df]]$ord, ] %>% 
+    as.data.frame() %>% 
+    set_names("X", "Y") %>% 
+    distinct(X, Y)
+}
+
+get_arrow <- function(data.path, reverse = FALSE){
+  if (reverse) {
+    data.arrow <- data.frame(
+      X = head(data.path)[5, "X"],
+      Y = head(data.path)[5, "Y"],
+      Xend = head(data.path)[1, "X"],
+      Yend = head(data.path)[1, "Y"]
+    )
+  }else{
+    data.arrow <- data.frame(
+      X = tail(data.path)[1, "X"],
+      Y = tail(data.path)[1, "Y"],
+      Xend = tail(data.path)[5, "X"],
+      Yend = tail(data.path)[5, "Y"]
+    )
+  }
+  return(data.arrow)
+}
+```
+
+```{r, fig.width=5, fig.height=5}
+dims = paste0("UMAP_", 1:2)
+meta = c("annotation", "pc.pseudotime")
+data.point <- FetchData(seu, vars = c(dims, meta))
+
+data.path <- get_path(p.curve, df=8)
+data.arrow <- get_arrow(data.path, reverse = T)
+pts <- c(min(data.point$pc.pseudotime), median(data.point$pc.pseudotime), max(data.point$pc.pseudotime))
+
+p <- ggplot() + 
+  geom_point(data = data.point, aes(UMAP_1, UMAP_2, color = pc.pseudotime), size = .2) + 
+  geom_path(data = data.path, aes(X,Y), size = 1) + 
+  geom_segment(data = data.arrow, aes(x = X, xend = Xend, y = Y, yend = Yend), 
+               arrow = arrow(length = unit(0.1, "in"), angle = 30, type = "closed"), size = 1) + 
+  scale_color_continuous(breaks = pts, labels = seq(0,100,50)) + 
+  guides(color = guide_colorbar(title = "Pseudotime")) + 
+  theme_classic(base_size = 15) + 
+  theme(legend.position = c(0.4, 0.8))
+
+png("../figures/Figure4A.png", width = 5, height = 5, units = "in", res = 600)
+p
+dev.off()
+```
+
+### 4B: Pseudotime
+
+```{r, fig.width=6, fig.height=3}
+pts <- c(min(data.point$pc.pseudotime), median(data.point$pc.pseudotime), max(data.point$pc.pseudotime))
+
+p <- ggplot(data = data.point, aes(annotation, pc.pseudotime, fill=annotation)) + 
+  geom_violin(scale = "width") + 
+  ggsci::scale_fill_d3("category20") + 
+  scale_y_continuous(breaks = pts, labels = seq(0,100,50)) + 
+  labs(x="", y="Pseudotime") + 
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle=45, hjust = 1))
+
+pdf("../figures/Figure4B.pdf", width = 6, height = 3)
+p  
+dev.off()
+```
+
+### 4C: known markers
+
+```{r}
+seu.magic <- readRDS("../../../seq-data/SHIP.10X/seu.magic.rds")
+annot.levels <- levels(seu.magic$annotation)
+cluster.annotation <- read_tsv("../../zhangxinxia_scrna/analysis_SHIPC/clusters.annotations.txt")
+seu.magic$annotation <- plyr::mapvalues(seu.magic$seurat_clusters.reorder, 
+                                        cluster.annotation$cluster_index, cluster.annotation$annotation)
+seu.magic$annotation <- factor(seu.magic$annotation, levels = annot.levels)
+
+flattern_imputated_data <- function(data.use, bin.width = 10, min.cells = 1, value = "") {
+  data.use %>%
+    mutate(pseudo.bin = round(pc.pseudotime / bin.width, 0)) %>%
+    group_by(pseudo.bin, genotype) %>%
+    summarise(median.exp = median(get(value)),
+              counts = n()) %>%
+    ungroup() %>%
+    mutate(pc.pseudotime = pseudo.bin * bin.width) %>%
+    filter(counts >= min.cells)
+}
+```
+
+```{r, fig.width=20, fig.height=4}
+genes <- c("Ccnd2","Stra8","Sycp2","Piwil1")
+dims = c("pc.pseudotime")
+meta = c("annotation", "genotype")
+data <- FetchData(seu.magic, vars = c(dims, meta, genes))
+
+plot.list <- lapply(genes, function(xx) {
+  data.use <- flattern_imputated_data(data, bin.width = 10, value = xx)
+  max.val <- max(data.use$median.exp)
+  pts <- c(min(data$pc.pseudotime), median(data$pc.pseudotime), max(data$pc.pseudotime))
+  ggplot() +
+    geom_line(data = data.use, aes(pc.pseudotime, median.exp, color=genotype, group=genotype), size = 1) +
+    geom_jitter(data = data, aes(pc.pseudotime, -max.val*0.1-0.1, fill = annotation), show.legend = F,
+                stroke = 0, color="white", shape=21, height = max.val*0.05, size = 1, alpha = .5) +
+    ggsci::scale_fill_d3("category20") + 
+    geom_vline(xintercept = -22540, linetype="dashed", color="blue") +
+    scale_x_continuous(breaks = pts, labels = seq(0,100,50)) + 
+    guides(color = guide_legend(title = "", override.aes = list(size = 1.5))) + 
+    labs(x="Pseudotime", y="Expression level", title = xx) + 
+    theme(legend.position = c(0.8, 0.95),
+          plot.title = element_text(face = "italic"))
+})
+
+pdf("../figures/Figure4C.lgd.pdf", width = 5, height = 4)
+lgd <- cowplot::get_legend(plot.list[[1]])
+cowplot::plot_grid(lgd)
+dev.off()
+
+png("../figures/Figure4C.png", width = 20, height = 4, units = "in", res = 600)
+plot.list <- lapply(plot.list, function(.x) .x + theme(legend.position = "none"))
+cowplot::plot_grid(plotlist = plot.list, nrow = 1)
+dev.off()
+```
+
+### 4D: preleptotene genes
+
+```{r, fig.width=20, fig.height=4}
+genes <- c("Gm4969", "Zcwpw1", "Gm960", "Mei1")
+alias <- c("Meiosin", "Top6bl")
+names(alias) <- c("Gm4969", "Gm960")
+
+dims = c("pc.pseudotime")
+meta = c("annotation", "genotype")
+data <- FetchData(seu.magic, vars = c(dims, meta, genes))
+
+plot.list <- lapply(genes, function(xx) {
+  data.use <- flattern_imputated_data(data, bin.width = 10, value = xx)
+  max.val <- max(data.use$median.exp)
+  pts <- c(min(data$pc.pseudotime), median(data$pc.pseudotime), max(data$pc.pseudotime))
+  ggplot() +
+    geom_line(data = data.use, aes(pc.pseudotime, median.exp, color=genotype, group=genotype), size = 1) +
+    geom_jitter(data = data, aes(pc.pseudotime, -max.val*0.1-0.1, fill = annotation), show.legend = F,
+                stroke = 0, color="white", shape=21, height = max.val*0.05, size = 1, alpha = .5) +
+    ggsci::scale_fill_d3("category20") + 
+    geom_vline(xintercept = -22540, linetype="dashed", color="blue") +
+    scale_x_continuous(breaks = pts, labels = seq(0,100,50)) + 
+    guides(color = guide_legend(title = "", override.aes = list(size = 1.5))) + 
+    labs(x="Pseudotime", y="Expression level", title = ifelse(xx %in% names(alias), alias[xx], xx)) + 
+    theme(legend.position = c(0.8, 0.95),
+          plot.title = element_text(face = "italic"))
+})
+
+png("../figures/Figure4D.png", width = 20, height = 4, units = "in", res = 600)
+plot.list <- lapply(plot.list, function(.x) .x + theme(legend.position = "none"))
+cowplot::plot_grid(plotlist = plot.list, nrow = 1)
+dev.off()
+```
+
+
+### 4E: spermatogonia genes
+```{r, fig.width=20, fig.height=4}
+genes <- c("Kit", "Uchl1", "Dnmt3b", "Chd7")
+
+dims = c("pc.pseudotime")
+meta = c("annotation", "genotype")
+data <- FetchData(seu.magic, vars = c(dims, meta, genes))
+
+plot.list <- lapply(genes, function(xx) {
+  data.use <- flattern_imputated_data(data, bin.width = 10, value = xx)
+  max.val <- max(data.use$median.exp)
+  pts <- c(min(data$pc.pseudotime), median(data$pc.pseudotime), max(data$pc.pseudotime))
+  ggplot() +
+    geom_line(data = data.use, aes(pc.pseudotime, median.exp, color=genotype, group=genotype), size = 1) +
+    geom_jitter(data = data, aes(pc.pseudotime, -max.val*0.1-0.1, fill = annotation), show.legend = F,
+                stroke = 0, color="white", shape=21, height = max.val*0.05, size = 1, alpha = .5) +
+    ggsci::scale_fill_d3("category20") + 
+    geom_vline(xintercept = -22540, linetype="dashed", color="blue") +
+    scale_x_continuous(breaks = pts, labels = seq(0,100,50)) + 
+    guides(color = guide_legend(title = "", override.aes = list(size = 1.5))) + 
+    labs(x="Pseudotime", y="Expression level", title = xx) + 
+    theme(legend.position = c(0.8, 0.95),
+          plot.title = element_text(face = "italic"))
+})
+
+png("../figures/Figure4E.png", width = 20, height = 4, units = "in", res = 600)
+plot.list <- lapply(plot.list, function(.x) .x + theme(legend.position = "none"))
+cowplot::plot_grid(plotlist = plot.list, nrow = 1)
+dev.off()
+```
+
+## Figure 5
+
+> ZFP541 is a transcriptional repressor binding to the promoters of meiotic prophase genes and their upstream meiosis initiators.
+
+```{r}
+library(ChIPseeker)
+library(tidyverse)
+library(org.Mm.eg.db)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(RColorBrewer)
+library(eulerr)
+options(stringsAsFactors = F)
+
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+
+tidyverse_conflicts()
+```
+
+### 5A: ZFP541 peaks annotation
+
+```{r}
+peakannot <- function(peak, summit) {
+  s1 <- readPeakFile(peak)
+  s2 <- read_tsv(summit, col_names = F)
+  s2 <- s2 %>% set_names(c("chr","start","end","name","log10Q")) %>% dplyr::filter(log10Q >= 2)
+  s1 <- s1 %>% subset(name %in% s2$name)
+  s1.anno <- annotatePeak(s1, TxDb=txdb, tssRegion=c(-3000, 3000), addFlankGeneInfo=TRUE, annoDb="org.Mm.eg.db")
+  return(s1.anno)
+}
+```
+
+```{r}
+z5.1 <- peakannot(peak = "../data/fig.3a.peaks/Zfp541_rep1_peaks.xls", 
+                  summit = "../data/fig.3a.peaks/Zfp541_rep1_summits.rmBL.bed")
+
+z5.2 <- peakannot(peak = "../data/fig.3a.peaks/Zfp541_rep2_peaks.xls", 
+                  summit = "../data/fig.3a.peaks/Zfp541_rep2_summits.rmBL.bed")
+
+z5.ko.1 <- peakannot(peak = "../data/fig.3a.peaks/Zfp541-KO_rep1_peaks.xls", 
+                     summit = "../data/fig.3a.peaks/Zfp541-KO_rep1_summits.rmBL.bed")
+
+modify.annoStat <- function(aa, sample){
+  annoStat = aa@annoStat
+  annoStat$sample = sample
+  annoStat$peakNum = aa@peakNum
+  return(annoStat)
+}
+
+data.use <- bind_rows(modify.annoStat(z5.1, "Zfp541 rep1"), 
+                      modify.annoStat(z5.2, "Zfp541 rep2"), 
+                      modify.annoStat(z5.ko.1, "Zfp541-KO"))
+
+data.use <- data.use %>% mutate(peaks = Frequency * peakNum / 100)
+
+saveRDS(data.use, "../data/peaks.stat.rds")
+write_tsv(z5.1@anno %>% as.data.frame(), "../data/fig.3a.peaks/Zfp541_rep1_peaks.annot.tsv")
+write_tsv(z5.2@anno %>% as.data.frame(), "../data/fig.3a.peaks/Zfp541_rep2_peaks.annot.tsv")
+write_tsv(z5.ko.1@anno %>% as.data.frame(), "../data/fig.3a.peaks/Zfp541-KO_peaks.annot.tsv")
+```
+
+```{r, fig.width=5, fig.height=4}
+data.use <- readRDS("../data/fig.3a.peaks/peaks.stat.rds")
+
+data.use <- data.use %>% filter(sample %in% c("Zfp541-KO rep1","Zfp541 rep1","Zfp541 rep2"))
+
+data.label <- data.use %>% 
+  filter(Feature=="Promoter (<=1kb)", sample %in% paste0("Zfp541 rep",1:3))
+
+data.label2 <- data.use %>% 
+  filter(Feature=="Promoter (<=1kb)")
+
+p <- data.use %>% 
+  ggplot(aes(sample, peaks, fill=Feature)) + 
+  geom_col() + 
+  geom_text(inherit.aes = F, data = data.label, 
+            aes(sample, peaks-2000, label=paste0(sprintf("%0.1f", Frequency), "%"))) + 
+  geom_text(inherit.aes = F, data = data.label2,
+            aes(sample, peakNum+500, label=peakNum)) + 
+  ggsci::scale_fill_d3("category20") +
+  xlab("") + ggtitle("Annotation of peaks") + 
+  theme_classic(base_size = 15) + 
+  theme(axis.text = element_text(color = "black"),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = .5))
+
+pdf("../figures/Figure5A.pdf", width = 5, height = 4)
+p
+dev.off()
+```
+
+### 5B: motif
+
+```{r}
+library(seqLogo)
+```
+
+```{r}
+plotMotif <- function(motif.file, pdf.file){
+  m <- read.table(motif.file, skip = 1)
+  m <- t(m)
+  m <- m/rep(colSums(m), each=4)
+  motif<-makePWM(m)
+  pdf(pdf.file, width = 5, height = 2)
+  seqLogo(motif, xaxis=F, yaxis=F, ic.scale = F)
+  dev.off()  
+}
+
+plotMotif("../data/fig.3b.motifs/rep1.motif", "../data/fig.3b.motifs/rep1.motif.pdf")
+plotMotif("../data/fig.3b.motifs/rep2.motif", "../data/fig.3b.motifs/rep2.motif.pdf")
+```
+
+
+### 5C: ZFP541 binding genes
+
+```{r}
+get.symbol <- . %>% as_tibble() %>% 
+  dplyr::filter(annotation=="Promoter (<=1kb)") %>% 
+  distinct(SYMBOL) %>% 
+  dplyr::filter(!is.na(SYMBOL))
+
+z5.genes.list <- list(
+  wt.rep1 = get.symbol(z5.1)$SYMBOL,
+  wt.rep2 = get.symbol(z5.2)$SYMBOL,
+  ko.rep1 = get.symbol(z5.ko.1)$SYMBOL
+)
+
+z5.genes.list.filter <- list(
+  rep1 = setdiff(z5.genes.list$wt.rep1, z5.genes.list$ko.rep1),
+  rep2 = setdiff(z5.genes.list$wt.rep2, z5.genes.list$ko.rep1)
+)
+```
+
+```{r, fig.width=4, fig.height=4}
+blue1 <- brewer.pal(6, "Blues")[1]
+blue2 <- brewer.pal(6, "Blues")[5]
+
+pdf("../figures/Figure3C.pdf", width = 4, height = 4)
+plot(euler(z5.genes.list.filter), quantities = T, fills = c(rep(blue1,2), rep(blue2,1)), labels = T, main="ZFP541-bound genes")
+dev.off()
+```
+
+```{r}
+z5.genes <- UpSetR::fromList(z5.genes.list.filter)
+rownames(z5.genes) <- unique(unlist(z5.genes.list.filter))
+z5.genes$observed <- rowSums(z5.genes)
+
+write.table(z5.genes, "../data/ZFP541_binding_genes.tsv", sep = "\t")
+```
+
+### 5D: ZFP541 regulated genes 
+```{r}
+z5.genes <- read.table("../data/ZFP541_binding_genes.tsv", sep = "\t")
+
+# DEGs
+data <- read.table("../data/WT_vs_Z5KO.lP.DEGs.ss2.tsv", sep = "\t")
+upreg.genes <- subset(data, change == "up in KO") %>% rownames()
+downreg.genes <- subset(data, change == "down in KO") %>% rownames()
+all.genes <- rownames(data)
+
+z5.genes$up_in_KO <- rownames(z5.genes) %in% upreg.genes %>% as.integer()
+z5.genes$down_in_KO <- rownames(z5.genes) %in% downreg.genes %>% as.integer()
+
+genes.list <- list(
+  "Zfp541-bound genes" = subset(z5.genes, observed >= 2) %>% rownames(),
+  "Up in KO" = upreg.genes,
+  "Down in KO" = downreg.genes
+)
+
+write.table(z5.genes, "../data/ZFP541_regulated_genes.tsv", sep = "\t")
+```
+
+```{r, fig.width=4, fig.height=4}
+pdf("../figures/Figure3D.pdf", width = 4, height = 4)
+plot(euler(genes.list), quantities = T, fills=c("white", "#F8B4BF", "#B0E1F7"))
+dev.off()
+```
+
+```{r}
+ftest <- function(gene.set.1, gene.set.2, background, alternative = "greater") {
+  a <- length(intersect(gene.set.1, gene.set.2))
+  b <- length(setdiff(gene.set.1, gene.set.2))
+  c <- length(setdiff(gene.set.2, gene.set.1))
+  d <- length(setdiff(setdiff(background, gene.set.1), gene.set.2))
+  fisher.test(matrix(c(a,b,c,d), ncol = 2), alternative = alternative)
+}
+
+ftest(upreg.genes, genes.list$`Zfp541-bound genes`, all.genes, "greater")
+ftest(downreg.genes, genes.list$`Zfp541-bound genes`, all.genes, "greater")
+```
+
+### 5E: BETA
+
+BETA: predict activate/repress function of Zfp541. See [reference](http://cistrome.org/BETA/tutorial.html)
+Inputs:
+1. Zfp541 binding sites: Zfp541_peaks.bed3
+2. RNA-seq: (BSF format)
+
+```{r}
+## for BSF
+data <- read.table("../data/WT_vs_Z5KO.lP.DEGs.ss2.tsv", sep = "\t")
+write.table(data[c("log2FoldChange", "padj")], "../data/WT_vs_Z5KO.lP.DEGs.ss2.bsf", sep = "\t", col.names = F, quote = F)
+```
+
+```{bash}
+BETA basic -p ../data/Zfp541_peaks.3c.bed \
+-e ../data/WT_vs_Z5KO.lP.DEGs.ss2.bsf -k BSF -g mm10 --df 0.01 -n Zfp541_eD \
+--gname2 \
+--bl --bf ~/data/data1/software/BETA_1.0.7/BETA/references/mm10_CTCF_bound.bed \
+-o ../figures/Zfp541_lP.basic
+```
+
+
+## Figure S8
+
+> Single-cell RNA-seq via Smart-seq2 on early and late pachytene spermatocytes from WT and Zfp541-/- testis.
+
+### S8A: pachytene markers
+```{r}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_processed.rds")
+```
+
+```{r, fig.width=6, fig.height=10}
+Idents(seu) <- factor(seu$cluster.annotation, levels = c("pre-meiotic", "early pachytene", "late pachytene"))
+markers <- c("Cenpa", "Kit", "H2afx", "Mybl1", "Piwil1", "Ldhc")
+p <- VlnPlot(seu, features = markers, pt.size = 0, ncol = 2, assay = "RNA", combine = T, log = F)
+
+pdf("../figures/FigureS8A.pdf", width = 6, height = 10)
+p
+dev.off()
+```
+
+### S8B: transcriptome similarity
+
+```{r}
+dge.counts <- readRDS("~/data/data3/jarning/seq-data/z541.ss2/counts.pseudo.bulk.rds")
+cellres <- readRDS("~/data/data3/jarning/public/TestisAtlas/data/cache/CellRes2018_30061742.rds")
+in.house <- list(
+  counts = do.call(cbind, dge.counts)
+)
+colnames(in.house$counts) <- paste0(rep(c("eP_WT","eP_KO","lP_WT","lP_KO"), each=3), 
+                                    rep(c(".r1",".r2",".r3"), 4))
+head(in.house$counts)
+in.house$tpm <- apply(in.house$counts, 2, function(x) x/sum(x)*1e6)
+
+select.genes <- intersect(rownames(cellres$mean_tpm), rownames(in.house$tpm))
+mat <- cbind(cellres$mean_tpm[select.genes, ], in.house$tpm[select.genes, ])
+```
+
+```{r, fig.width=8, fig.height=6}
+corr <- cor(log2(mat+1), method = "pearson")
+pdf("../figures/FigureS8B.pdf", width = 8, height = 6)
+pheatmap::pheatmap(corr[9:nrow(corr),9:ncol(corr)], cluster_cols = F, cluster_rows = F, display_numbers = T, number_color = "black")
+dev.off()
+```
+
+## Figure S9
+
+> 10x single-cell RNA-seq on sorted tetraploid cells from WT and Zfp541-/- testis.
+
+```{r}
+library(Seurat)
+library(myRutils)
+library(tidyverse)
+
+theme_dimplot <- function (base_size = 11, base_family = "", base_line_size = base_size/22, base_rect_size = base_size/22)
+{
+  half_line <- base_size/2
+  theme_bw(base_size = base_size, base_family = base_family,
+           base_line_size = base_line_size, base_rect_size = base_rect_size) %+replace%
+    theme(axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          panel.border = element_rect(fill = NA, colour = "black", size = base_line_size),
+          panel.grid = element_blank(),
+          strip.background = element_blank())
+}
+```
+
+### S9A: UMAP (10x)
+```{r}
+seu <- readRDS("~/data/data3/jarning/seq-data/SHIP.10X/seu.rm_doublets.addMS.rds")
+cluster.annotation <- read_tsv("../../zhangxinxia_scrna/analysis_SHIPC/clusters.annotations.txt")
+seu$annotation <- plyr::mapvalues(seu$seurat_clusters.reorder, cluster.annotation$cluster_index, cluster.annotation$annotation)
+
+seu$orig.ident <- factor(seu$orig.ident, levels = c("WT","Z541"))
+seu$genotype <- plyr::mapvalues(seu$orig.ident, c("WT","Z541"), c("WT", "Zfp541(-/-)"))
+```
+
+```{r, fig.width=10, fig.height=5}
+dims = paste0("UMAP_", 1:2)
+meta = c("genotype", "annotation")
+data <- FetchData(seu, vars = c(dims, meta))
+
+p <- data %>% 
+  ggplot(aes(UMAP_1, UMAP_2)) + 
+  geom_point(inherit.aes = F, data = data %>% dplyr::select(-genotype), aes(UMAP_1, UMAP_2), size = 0.1, color="grey", alpha = 0.1) + 
+  geom_point(aes(color=annotation), size = .5) + 
+  ggsci::scale_color_d3("category20") + 
+  guides(color = guide_legend(title = "", override.aes = list(size = 3))) + 
+  labs(x="", y="") + 
+  facet_wrap(~genotype, nrow = 1) + 
+  theme_dimplot(base_size = 20) + 
+  theme(strip.text = element_blank())
+
+png("../figures/FigureS9A.png", width = 10, height = 5, unit="in", res=600)
+p
+dev.off()
+```
+
+### S9B: cell counts
+
+```{r, fig.width=8, fig.height=5}
+data.use <- data %>% 
+  group_by(genotype, annotation) %>% 
+  summarise(nCells = n()) %>% 
+  ungroup()
+
+data.use <- data.use %>%
+  mutate(annotation = factor(annotation, levels = rev(levels(seu$annotation))) )
+
+p <- data.use %>% 
+  ggplot(aes(annotation, nCells)) + 
+  geom_col(aes(fill=annotation), show.legend = F) + 
+  scale_fill_manual(values = rev(ggsci::pal_d3("category20")(15)) ) + 
+  coord_flip() + 
+  facet_grid(~genotype) + 
+  NoLegend() + 
+  scale_x_discrete(position = "top") + 
+  ylab("Number of cells") + xlab("") + 
+  theme_bw(base_size = 20) + 
+  theme(axis.line = element_line(color="black"),
+        axis.text = element_text(color = "black"),
+        plot.title = element_text(hjust = .5, face = "bold"),
+        panel.grid = element_blank(),
+        strip.text = element_blank(),
+        strip.background = element_blank(),
+        legend.background = element_rect(fill=alpha('white', 0))
+  )
+
+png("../figures/FigureS9B.png", width = 8, height = 5, units = "in", res = 600)
+p
+dev.off()
+```
+
+### S9C: markers
+
+```{r, fig.width=8, fig.height=5}
+p <- DotPlot(seu, group.by = "annotation",
+             features = c("Dazl","Nanos3","Ccnd2","Kit",
+                          "Stra8","Gm4969","Dmc1","Meiob","Rad51ap2",
+                          "Rpl10","Rpl10l","Mybl1","Piwil1","Pou5f2","Ccna1","Tex36","Acrv1",
+                          "Prm1","Cstl1")) + 
+  labs(x = "", y = "") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "italic"))
+
+pdf("../figures/FigureS9C.pdf", width = 8, height = 5)
+p
+dev.off()
+```
+
+### S9D: integrated UMAP
+
+```{r, fig.width=12, fig.height=5}
+data.use <- read_tsv("../../zhangxinxia_scrna/analysis_SHIPC/cell_meta.integrated.tsv")
+
+get_label_pos <- function(data, emb = "tSNE", group.by="ClusterID", label.by="ClusterID") {
+  new.data <- data[, c(paste(emb, 1:2, sep = "_"), group.by, label.by)]
+  colnames(new.data) <- c("x","y","cluster","label")
+  clusters <- names(table(new.data$cluster))
+  new.pos <- lapply(clusters, function(i) {
+    tmp.data = subset(new.data, cluster == i)
+    data.frame(
+      x = median(tmp.data$x),
+      y = median(tmp.data$y),
+      group = tmp.data$cluster[1],
+      label = tmp.data$label[1])
+  })
+  do.call(rbind, new.pos)
+}
+
+color.use1 <- ggsci::pal_d3("category20")(15) 
+names1 <- levels(seu$annotation)
+
+color.use2 <- readLines("~/data/data3/jarning/project2020/zhangxinxia_scrna/public/20stages.color.txt")
+names2 <- names(table(cellres$cell_type))
+color.use <- c(color.use1, color.use2)
+
+data.use$cluster <- factor(data.use$cluster,
+                           levels = c(paste("10X", names1, sep = "_"),
+                                      paste("smart-seq", names2, sep = "_")))
+
+p1 <- ggplot() + 
+  geom_point(data = data.use %>% filter(tech == "10X"),
+             aes(UMAP_1, UMAP_2, fill=factor(celltype, levels=names1)), size = 3, shape=21, color="black") +
+  scale_fill_manual(values = color.use1,
+                    breaks = names1) + 
+  theme_classic(base_size = 20) + 
+  theme(legend.title = element_blank())
+
+lgd <- cowplot::get_legend(p1)
+
+p2 <- ggplot() + 
+  geom_point(data = data.use %>% filter(tech == "10X"),
+             aes(UMAP_1, UMAP_2, color=cluster), size = 1) + 
+  geom_point(data = data.use %>% filter(tech == "smart-seq"), 
+             aes(UMAP_1, UMAP_2), size = 3.5, shape=21, fill="black") + 
+  geom_point(data = data.use %>% filter(tech == "smart-seq"), 
+             aes(UMAP_1, UMAP_2, color=cluster), size = 2.8) + 
+  ggrepel::geom_label_repel(data = get_label_pos(data.use %>% filter(tech == "smart-seq"), 
+                                                 emb = "UMAP", group.by = "cluster", label.by = "celltype"), 
+                            aes(x, y, label = label, color=group), size=4) + 
+  scale_color_manual(values = color.use,
+                     breaks = levels(data.use$cluster)) +
+  theme_classic(base_size = 15) + 
+  theme(legend.position = "none")
+
+p3 <- ggplot() + 
+  geom_point(data = data.use %>% filter(tech == "10X"),
+             aes(UMAP_1, UMAP_2, color=cluster), size = 1) + 
+  scale_color_manual(values = color.use,
+                     breaks = levels(data.use$cluster)) +
+  theme_classic(base_size = 15) + 
+  theme(legend.position = "none")
+
+png("../figures/FigureS9D.png", width = 12, height = 5, units = "in", res = 600)
+cowplot::plot_grid(p2,p3,lgd, rel_widths = c(0.4,0.4,0.2), nrow = 1)
+dev.off()
+```
+
+## Figure S10
+
+> Verification of the DEGs in Zfp541-/- late pachytene spermatocytes identified by Smart-seq2 using 10x scRNA-seq data.
+
+### S10A: compare 10x & ss2 (venn plot)
+
+### S10B: compare 10x & ss2 (volcano plot)
+
+### S10C: DEGs (10x)
+
+```{r}
+library(myRutils)
+```
+
+```{r}
+seu.1 <- subset(seu, annotation %notin% c("D","RS.1","RS.2","RS.3","ES","MI","Diff.Spg1","Diff.Spg2","Diff.Spg3"))
+Idents(seu.1) <- seu.1$annotation
+```
+
+```{r, fig.width=12, fig.height=5}
+genes.choose <- c(
+  "Prdm9", ## H3K4me3 writer
+  "Gm960","Mei1", ## DSBs
+  "Gm4969","Rxra","Ncoa2","Ythdc2", # Meiosis initiate regulator
+  "Zcwpw1", # H3K4me3 reader
+  "Mcmdc2","Rad51","Hfm1","Rnf212","Msh5","Tex15", # DSB repair and meiotic recombination
+  "Syce3","4930447C04Rik", # SC
+  "Kit","Uchl1","Dnmt3b","Chd7" # spermatogonia genes
+)
+
+p <- DotPlot(seu.1, features = genes.choose, 
+             cols = c("blue", "red"), 
+             split.by = "orig.ident") + 
+  labs(x="", y="") + RotatedAxis() + 
+  theme(axis.text.y = element_text(color = c("blue","red")),
+        axis.text.x = element_text(face = "italic", angle = 45))
+
+pdf("../figures/Figures10C.pdf", width = 10, height = 5)
+p
+dev.off()
+```
+
+### S10D: GO of down in KO
+
+## Figure S11
+
+> Gene module scores of gene signatures during spermatogenesis along the germ cell developmental trajectory in WT and Zfp541-/- testis.
+
+```{r}
+signatures <- c(
+  "31P: SSC",
+  "31N: Diff.Spg",
+  "33N: broad Spg",
+  "2P: B.Spg",
+  "5N: (pre)Leptotene",
+  "44N: Zygotene",
+  "38P: MSCI",
+  "13N: early Pachytene",
+  "39N: late Pachytene",
+  "20N: Meiotic Division"
+)
+
+names(signatures) <- c("V31P", "V31N", "V33N", "V2P", "V5N", "V44N", "V38P", "V13N", "V39N", "V20N")
+
+length(signatures)
+```
+
+```{r, fig.width=16, fig.height=8}
+gene_modules = names(signatures)
+dims = c("pc.pseudotime")
+meta = c("annotation", gene_modules, "genotype")
+data <- FetchData(seu, vars = c(dims, meta))
+data <- data %>% filter(annotation %notin% c("ES",paste0("RS.", 1:3)))
+
+plot.list <- lapply(gene_modules, function(xx) {
+  pts <- c(min(data$pc.pseudotime), median(data$pc.pseudotime), max(data$pc.pseudotime))
+  data.use <- flattern_imputated_data(data, bin.width = 10, value = xx)
+  ggplot() +
+    geom_line(data = data.use, aes(pc.pseudotime, median.exp, color=genotype, group=genotype), size = 0.5) +
+    geom_jitter(data = data, aes(pc.pseudotime, -0.3, fill = annotation), show.legend = F,
+                stroke = 0, color="white", shape=21, height = 0.02, size = 1, alpha = .5) +
+    ggsci::scale_fill_d3("category20") + 
+    geom_vline(xintercept = -22540, linetype="dashed", color="blue") +
+    scale_x_continuous(breaks = pts, labels = seq(0,100,50)) + 
+    guides(color = guide_legend(title = "", override.aes = list(size = 1.5))) + 
+    labs(x="Pseudotime", y="Module Score", title = signatures[xx]) + 
+    theme(legend.position = c(0.8, 0.95))
+})
+
+png("../figures/FigureS11.png", width = 16, height = 8, unit="in", res=600)
+plot.list <- lapply(plot.list, function(p) p + theme(legend.position = "none"))
+cowplot::plot_grid(plotlist = plot.list, nrow = 2)
+dev.off()
+```

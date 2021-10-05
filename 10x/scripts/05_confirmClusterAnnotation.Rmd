@@ -1,0 +1,136 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(SeuratWrappers)
+library(tidyverse)
+```
+
+#### Confirm cluster annotation
+
+To confirm stage assignment, we compared our single-cell profiles with published scRNA-seq data [Chen et al., 2018](https://www.nature.com/articles/s41422-018-0074-y)
+
+```{r loadData}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+chen2018 <- readRDS("~/data/data3/jarning/public/TestisAtlas/data/cache/CellRes2018_30061742.rds")
+
+seu.1 <- CreateSeuratObject(seu@assays$RNA@counts)
+seu.2 <- CreateSeuratObject(chen2018$counts)
+```
+
+```{r merge}
+seu.1$tech = "10X"
+seu.2$tech = "smart-seq"
+
+seu.1$celltype <- seu$annotation
+seu.2$celltype <- chen2018$cell_type[colnames(seu.1), 1]
+
+seu.1$batch = seu$orig.ident
+seu.2$batch <- "smart-seq"
+
+seu.merge <- merge(seu.1, seu.2)
+```
+
+```{r integrate}
+seu.list <- SplitObject(seu.merge, split.by = "batch")
+for (i in 1:length(seu.list)) {
+  seu.list[[i]] <- NormalizeData(seu.list[[i]], verbose = FALSE)
+  seu.list[[i]] <- FindVariableFeatures(seu.list[[i]], selection.method = "vst", 
+                                        nfeatures = 2000, verbose = FALSE)
+}
+seu.merge <- RunFastMNN(object.list = seu.list)
+seu.merge <- RunUMAP(seu.merge, reduction = "mnn", dims = 1:20, n.neighbors = 100, n.epochs = 200)
+```
+
+```{r plot function}
+get_label_pos <- function(data, emb = "tSNE", group.by="ClusterID", label.by="ClusterID") {
+  new.data <- data[, c(paste(emb, 1:2, sep = "_"), group.by, label.by)]
+  colnames(new.data) <- c("x","y","cluster","label")
+  clusters <- names(table(new.data$cluster))
+  new.pos <- lapply(clusters, function(i) {
+    tmp.data = subset(new.data, cluster == i)
+    data.frame(
+      x = median(tmp.data$x),
+      y = median(tmp.data$y),
+      group = tmp.data$cluster[1],
+      label = tmp.data$label[1])
+  })
+  do.call(rbind, new.pos)
+}
+```
+
+
+```{r plots, fig.width=12, fig.height=5}
+## set colors
+colors.1 <- ggsci::pal_d3("category20")(15) 
+names.1 <- levels(seu$annotation)
+
+colors.2 <- c("#75BA7A", "#A3BBDC", "#4E80B1", "#002B1E", "#D4D3DB", 
+              "#9B6672", "#ADA7CE", "#C9E4C3", "#53AEC9", "#22457E", 
+              "#ED9834", "#62270B", "#FAD87D", "#E55133", "#7F0F25",
+              "#AD107E", "#E22E89", "#4B2665", "#F5DFD8", "#4C0E1C")
+names.2 <- names(table(chen2018$cell_type))
+
+color.use <- c(colors.1, colors.2)
+
+## data
+data.use <- FetchData(seu.merge, vars = c("UMAP_1", "UMAP_2", "celltype", "tech"))
+data.use$cluster <- paste(data.use[["tech"]], data.use[["celltype"]], sep = "_")
+data.use$cluster <- factor(data.use$cluster,
+                           levels = c(paste("10X", names.1, sep = "_"),
+                                      paste("smart-seq", names.2, sep = "_")))
+
+## plots
+p1 <- ggplot() + 
+  geom_point(data = data.use %>% filter(tech == "10X"),
+             aes(UMAP_1, UMAP_2, fill=factor(celltype, levels=names.1)), 
+             size = 3, shape=21, color="black") +
+  scale_fill_manual(values = colors.1, breaks = names.1) + 
+  theme_classic(base_size = 20) + 
+  theme(legend.title = element_blank())
+
+lgd <- cowplot::get_legend(p1)
+
+p2 <- ggplot() + 
+  geom_point(data = data.use %>% filter(tech == "10X"),
+             aes(UMAP_1, UMAP_2, color = cluster), size = 1) + 
+  geom_point(data = data.use %>% filter(tech == "smart-seq"), 
+             aes(UMAP_1, UMAP_2), size = 3.5, shape=21, fill="black") + 
+  geom_point(data = data.use %>% filter(tech == "smart-seq"), 
+             aes(UMAP_1, UMAP_2, color = cluster), size = 2.8) + 
+  ggrepel::geom_label_repel(data = get_label_pos(data.use %>% filter(tech == "smart-seq"), 
+                                                 emb = "UMAP", group.by = "cluster", label.by = "celltype"), 
+                            aes(x, y, label = label, color = group), size=4) + 
+  scale_color_manual(values = color.use,
+                     breaks = levels(data.use$cluster)) +
+  theme_classic(base_size = 15) + 
+  theme(legend.position = "none")
+
+p3 <- ggplot() + 
+  geom_point(data = data.use %>% filter(tech == "10X"),
+             aes(UMAP_1, UMAP_2, color=cluster), size = 1) + 
+  scale_color_manual(values = color.use,
+                     breaks = levels(data.use$cluster)) +
+  theme_classic(base_size = 15) + 
+  theme(legend.position = "none")
+
+cowplot::plot_grid(p2,p3,lgd, rel_widths = c(0.4,0.4,0.2), nrow = 1)
+```
+
+```{r saveData}
+out.dir <- "tmp/confirmCellAnnotation/"
+dir.create(out.dir)
+write_tsv(data.use, paste0(out.dir, "cell_meta.integratedChen2018.tsv"))
+```
+
+
+```{r info}
+sessionInfo()
+```
+

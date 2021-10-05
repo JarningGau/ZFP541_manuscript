@@ -1,0 +1,154 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (Smart-Seq2)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+options(stringsAsFactors = F)
+library(DESeq2)
+library(clusterProfiler)
+library(tidyverse)
+```
+
+#### Build pseudo-bulk matrix
+
+```{r}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_processed.rds")
+
+## select cells
+data <- seu@meta.data
+
+groups <- list(
+  eP.WT = data %>% filter(genotype =="WT", time.point=="260h", cluster.annotation=="early pachytene") %>% rownames,
+  eP.Z5KO = data %>% filter(genotype =="Zfp541(-/-)", time.point=="260h", cluster.annotation=="early pachytene") %>% rownames,
+  lP.WT = data %>% filter(genotype=="WT", time.point=="360h", cluster.annotation=="late pachytene") %>% rownames,
+  lP.Z5KO = data %>% filter(genotype=="Zfp541(-/-)", time.point=="360h", cluster.annotation=="late pachytene") %>% rownames
+)
+
+seu.filter <- subset(seu, cells = do.call(c, groups))
+
+seu.filter$abbr.cell_type <- plyr::mapvalues(
+  x = seu.filter$cluster.annotation,
+  from = c("early pachytene", "late pachytene"),
+  to = c("eP", "lP")
+)
+
+saveRDS(seu.filter, "~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_final.rds")
+```
+
+```{r}
+## build pseudo-bulk matrix
+dge.counts <- pblapply(groups, function(xx) {
+  tt<-data.frame(
+    row.names = xx, # cellID
+    sampleID = sapply(strsplit(xx, split = "\\."), function(x) x[1]) # plateID
+  )
+  tt$count <- plyr::mapvalues(
+    x = tt$sampleID,
+    from = names(table(tt$sampleID)), # plateID
+    to = table(tt$sampleID) # cells
+  )
+  tt$count <- as.integer(tt$count)
+  tt <- subset(tt, count >= 5) # only kept plate with cells >= 5
+  samples <- names(table(tt$sampleID)) # plates
+  # sum of cells from the same plate
+  dge.group <- lapply(samples, function(yy) {
+    cells <- subset(tt, sampleID == yy) %>% rownames()
+    rowSums(as.matrix(seu[["RNA"]]@counts[, cells]))
+  })
+  names(dge.group) <- samples
+  dge.group <- do.call(cbind, dge.group)
+  dge.group
+})
+names(dge.counts) <- names(groups)
+saveRDS(dge.counts, "~/data/data3/jarning/seq-data/z541.ss2/pseudo-bulk.counts.rds")
+```
+
+#### Bulk expression matrix
+
+```{r}
+dge.TPM <- lapply(dge.counts, function(xx) {
+  apply(xx, 2, function(x) x/sum(x)*1e6) 
+}) %>% do.call(cbind, .) %>% 
+  as.data.frame() %>% 
+  set_names(paste0(rep(names(dge.counts), each=3), rep(c("_r1","_r2","_r3"), 4)))
+
+## save results
+dir.create("../results")
+write.table(dge.TPM, "../results/TableS2.GeneExpression(TPM).tsv", sep = "\t", quote = F)
+```
+
+
+#### DE test (DESeq2)
+
+```{r}
+## functions for DE test
+DEtest <- function(dge.counts, groups, log2FC.threshold=1, padj.cutoff=0.05) {
+  counts1 <- dge.counts[[groups[1]]]
+  counts2 <- dge.counts[[groups[2]]]
+  
+  count.data <- cbind(counts1, counts2)
+  col.data <- data.frame(
+    row.names = colnames(count.data),
+    group = c(rep(groups[1], ncol(counts1)), rep(groups[2], ncol(counts2)) )
+  )
+  col.data$group <- factor(col.data$group, levels = groups)
+  dds <- DESeqDataSetFromMatrix(countData = count.data,
+                                colData = col.data,
+                                design= ~ group)
+  dds <- DESeq(dds, test = "LRT", reduced = ~1)
+  res <- as.data.frame(results(dds))
+  res <- subset(res, !is.na(padj))
+  res$change <- ifelse(res$log2FoldChange > 0, "up in KO", "down in KO")
+  res$change <- ifelse(res$padj < padj.cutoff & abs(res$log2FoldChange) >= log2FC.threshold, res$change, "NS")
+  return(res)
+}
+```
+
+```{r}
+## perform DE test
+comparisons <- list(
+  c("eP.WT", "eP.Z5KO"),
+  c("lP.WT", "lP.Z5KO")
+)
+
+names(comparisons) <- sapply(comparisons, function(xx) paste(xx[1], "vs", xx[2]))
+
+de.deseq2 <- pblapply(comparisons, function(xx) DEtest(dge.counts, xx))
+
+names(de.deseq2) <- names(comparisons)
+```
+
+```{r}
+## save DESeq2 results
+write.table(de.deseq2$`eP.WT vs eP.Z5KO`, "../results/TableS2.DESeq2.WT_vs_Zfp541-KO(eP).tsv", sep = "\t", quote = F)
+write.table(de.deseq2$`lP.WT vs lP.Z5KO`, "../results/TableS2.DESeq2.WT_vs_Zfp541-KO(lP).tsv", sep = "\t", quote = F)
+```
+
+#### GO analysis
+
+```{r}
+## prepare data
+data <- de.deseq2$`lP.WT vs lP.Z5KO`
+DEGs <- list(
+  "up in KO" = data %>% filter(change == "up in KO") %>% rownames(),
+  "down in KO" = data %>% filter(change == "down in KO") %>% rownames()
+)
+
+## load GO dataset
+t2g <- readRDS("../reference/MGI_GO_BP.term2gene.rds")
+t2n <- readRDS("../reference/MGI_GO_BP.term2name.rds")
+
+## enrichment analysis
+ego.bp <- list(
+  up = enricher(gene = DEGs$`up in KO`, TERM2GENE = t2g, TERM2NAME = t2n, pvalueCutoff = 1, minGSSize = 0),
+  down = enricher(gene = DEGs$`down in KO`, TERM2GENE = t2g, TERM2NAME = t2n, pvalueCutoff = 1, minGSSize = 0)
+)
+
+## save results
+write_tsv(ego.bp$up@result, "../results/WT_vs_Z5KO.lP.upInKO.ego.tsv")
+write_tsv(ego.bp$down@result, "../results/WT_vs_Z5KO.lP.downInKO.ego.tsv")
+```
+

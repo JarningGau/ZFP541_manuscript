@@ -1,0 +1,57 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(magic)
+library(tidyverse)
+`%notin%` <- Negate(`%in%`)
+```
+
+#### Imputation by MAGIC
+
+To explore the functional roles of ZFP541 in transcriptional regulation, we characterized the gene expression dynamics using our 10x scRNA-seq data. We fitted the principle curve on the UMAP embeddings to calculate the pseudotime for each cell (`06_trajectoryInference.Rmd`) and imputed the inflated zeros of our scRNA-seq digital expression matrixes for WT and Zfp541-/- germ cells respectively using MAGIC [van Dijk et al., 2018](https://pubmed.ncbi.nlm.nih.gov/29961576/)
+
+```{r loadData}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+seu$orig.ident <- factor(seu$orig.ident, levels = c("WT","Z541"))
+seu$genotype <- plyr::mapvalues(seu$orig.ident, c("WT","Z541"), c("WT", "Zfp541(-/-)"))
+
+## drop late spermatids
+cells.use <- rownames(subset(seu@meta.data, annotation %notin% c("RS.1","RS.2","RS.3","ES")))
+seu <- subset(seu, cells = cells.use)
+
+## kept genes expressed >= 10 cells
+expr.in.cells <- rowSums(as.matrix(seu[["RNA"]]@counts) > 0)
+select.features <- names(expr.in.cells[expr.in.cells >= 10])
+seu <- seu[select.features, ]
+```
+
+```{r magic}
+# split data
+seu.list <- SplitObject(seu, split.by = "orig.ident")
+# imputation
+seu.list$WT <- magic(seu.list$WT, genes = "all_genes", seed = 1024, npca=15, verbose = 2)
+seu.list$Z541 <- magic(seu.list$Z541, genes = "all_genes", seed = 1024, npca=15)
+# change default assay
+DefaultAssay(seu.list$WT) <- "MAGIC_RNA"
+DefaultAssay(seu.list$Z541) <- "MAGIC_RNA"
+# merge data
+seu.magic <- merge(seu.list$WT, seu.list$Z541)
+seu.magic$annotation <- factor(seu.magic$annotation, levels = levels(seu$annotation))
+```
+
+```{r saveData}
+saveRDS(seu.magic, "~/data/data3/jarning/seq-data/z541.10X/seu.magic.rds")
+```
+
+
+```{r info}
+sessionInfo()
+```
+

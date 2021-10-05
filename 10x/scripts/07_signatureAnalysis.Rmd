@@ -1,0 +1,121 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(pbapply)
+library(tidyverse)
+```
+
+### Signature analysis
+
+To systermatic explore the disrupted transcritional programs after Zfp541 knockout, we adopted the reported decomposed stage-specific expressed gene signatures by [Jung et al., 2019](https://elifesciences.org/articles/43966) during spermatogenesis.
+
+#### Calculate gene module score
+
+```{r load Data}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+seu$orig.ident <- factor(seu$orig.ident, levels = c("WT","Z541"))
+seu$genotype <- plyr::mapvalues(seu$orig.ident, c("WT","Z541"), c("WT", "Zfp541(-/-)"))
+
+gene.list <- read_tsv("../reference/spermatogenesis.signatures.txt")
+gene.list <- as.list(gene.list)
+names(gene.list) <- sapply(strsplit(names(gene.list), split = ":"), function(xx) xx[1])
+```
+
+```{r moduleScore}
+orig.meta.colnames <- colnames(seu@meta.data)
+seu <- AddModuleScore(seu, features = gene.list, name = "SDA_module")
+colnames(seu@meta.data) <- c(orig.meta.colnames, paste0("V", names(gene.list)))
+```
+
+#### T test on gene module score
+
+```{r reshapData}
+signatures = paste0("V", names(gene.list))
+
+## get data
+dims = c("pc.pseudotime")
+meta = c("annotation", "genotype", signatures)
+data <- FetchData(seu, vars = c(dims, meta))
+
+## functions for reshape data: smooth gene module score
+flattern_imputated_data <- function(data.use, bin.width = 10, min.cells = 1, value = "SHIP_repressed_program") {
+  data.use %>%
+    mutate(pseudo.bin = round(pc.pseudotime / bin.width, 0)) %>%
+    group_by(pseudo.bin, genotype) %>%
+    summarise(median.exp = median(get(value)),
+              counts = n(),
+              annotation = unique(annotation)) %>%
+    ungroup() %>%
+    mutate(pc.pseudotime = pseudo.bin * bin.width) %>%
+    filter(counts >= min.cells)
+}
+
+## reshape data
+data.list <- pblapply(signatures, function(xx) {
+  data = flattern_imputated_data(data, bin.width = 10, min.cells = 1, value = xx)
+})
+names(data.list) <- signatures
+```
+
+
+```{r t-test}
+stages <- names(table(data$annotation))
+ttest.list <- pblapply(signatures, function(xx) {
+  ## for each gene module
+  tt <- lapply(stages, function(yy) {
+    ## for each stage
+    control = data.list[[xx]] %>% filter(annotation == yy, genotype == "WT") %>% `[[`("median.exp")
+    test = data.list[[xx]] %>% filter(annotation == yy, genotype == "Zfp541(-/-)") %>% `[[`("median.exp")
+    ## max sample size = 30
+    if(length(control) > 30) control <- sample(control, size = 30, replace = F)
+    if(length(test) > 30) test <- sample(test, size = 30, replace = F)
+    ## sample size must >= 3
+    if(length(control) >=3 & length(test) >= 3){
+      t.test(control, test, paired = F)
+    }else{
+      NA
+    }
+  })
+  names(tt) <- stages
+  tt
+})
+
+names(ttest.list) <- signatures
+
+## reshape data
+data.use <- lapply(signatures, function(yy){
+  ## for each gene module
+  tt <- lapply(ttest.list[[yy]], function(xx) {
+    if(is.na(xx)) {
+      return(data.frame(diff = NA, p.value = NA, t=NA))
+    }else{
+      return(data.frame(diff = diff(xx$estimate), p.value = xx$p.value, t = -xx$statistic))
+    }
+  }) %>% do.call(rbind, .)
+  tt$group <- yy
+  tt$stage <- stages
+  tt
+})
+
+names(data.use) <- signatures
+data.use <- do.call(rbind, data.use)
+```
+
+```{r saveData}
+write_tsv(data.use, "../results/Figure3F.Zfp541-KO_vs_WT.geneModuleTtest.tsv")
+## refresh final seurat object
+saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+```
+
+
+```{r info}
+sessionInfo()
+```
+

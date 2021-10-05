@@ -1,0 +1,212 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(SeuratWrappers)
+library(umap)
+library(tidyverse)
+```
+
+
+#### Clustering
+
+```{r loadData}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.rds")
+```
+
+```{r cluster, fig.width=16, fig.height=10}
+## clustering: try different resolution params
+seu <- seu %>% 
+  FindNeighbors(dims = 1:30, reduction = "mnn", k.param = 100, verbose = FALSE) %>% 
+  FindClusters(resolution = c(.1, .2, .4, .6, .8), verbose = FALSE)
+
+## plots
+cowplot::plot_grid(
+  DimPlot(seu, group.by = "RNA_snn_res.0.1", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.1"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.2", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.2"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.4", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.4"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.6", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.6"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.8", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.8"),
+  ncol = 3
+)
+
+## final resolution
+seu$seurat_clusters <- seu$RNA_snn_res.0.4
+Idents(seu) <- seu$seurat_clusters
+```
+
+```{r knownMarkers, fig.width=8, fig.height=5}
+DotPlot(seu,
+        features = c("Dazl","Vim", # germ cells vs somatic cells
+                     "Gfra1","Ccnd2", # spermatogonia
+                     "Stra8","Gm4969", # pre leptotene spermatocytes
+                     "Zcwpw1","Prdm9", # leptotene spermatocytes
+                     "Meiob","Rad51ap2", # zygotene spermatocytes
+                     "Rpl10","Rpl10l", # MSIC and its paralogs
+                     "Mybl1","Piwil1", # pachytene spermatocytes
+                     "Pou5f2","Ccna1", # diplotene spermatocytes
+                     "Tex36","Acrv1", # round spermatids
+                     "Prm1","Cstl1") # enlongated spermatids
+        ) +  
+  labs(x = "", y = "") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### Drop douletes
+
+Clusters expressed multiple stage markers were doublets.
+
+Cluster  2: doublets (late spermatocytes and spermatids)
+Cluster 10: doublets (early and late spermatocytes)
+Cluster 11: somatics cells
+
+```{r dropCells}
+`%notin` <- Negate(`%in%`)
+seu.filter <- subset(seu, seurat_clusters %notin% c(2,10,11))
+table(seu.filter$orig.ident)
+```
+
+```{r redoBatchCorrection}
+seu.list <- SplitObject(seu.filter, split.by = "orig.ident")
+for (i in 1:length(seu.list)) {
+  seu.list[[i]] <- NormalizeData(seu.list[[i]], verbose = FALSE)
+  seu.list[[i]] <- FindVariableFeatures(seu.list[[i]], selection.method = "vst", 
+                                        nfeatures = 2000, verbose = FALSE)
+}
+seu <- RunFastMNN(object.list = seu.list)
+```
+
+#### Optimize umap
+
+```{r umap}
+dir.create("tmp/umap")
+
+# parameters used for optimize
+n_neighbors <- c(15,50,100) # default: 15
+n_epochs <- c(100,300,400) # default: 200
+
+# UMAP settings
+umap.settings <- umap.defaults
+umap.settings$random_state <- 1111 # set seed
+
+# Optimize UMAP results
+data.use <- Embeddings(object = seu, reduction = "mnn")[, 1:30]
+
+for (nn in n_neighbors) {
+  ne <- 200
+  message(paste0("n_neighbors:", nn, "\nn_epochs: ", ne))
+  umap.settings$n_neighbors <- nn
+  umap.settings$n_epochs <- ne
+  u <- umap(data.use, config = umap.settings, method = "umap-learn")
+  output <- paste0("tmp/umap/mnn.umap_nn_", nn, "_epochs_", ne, ".rds")
+  message("saving result to: ", output)
+  saveRDS(u, file = output)
+  message("finished!")
+}
+
+for (ne in n_epochs) {
+  nn <- 15
+  message(paste0("n_neighbors:", nn, "\nn_epochs: ", ne))
+  umap.settings$n_neighbors <- nn
+  umap.settings$n_epochs <- ne
+  u <- umap(data.use, config = umap.settings, method = "umap-learn")
+  output <- paste0("tmp/umap/mnn.umap_nn_", nn, "_epochs_", ne, ".rds")
+  message("saving result to: ", output)
+  saveRDS(u, file = output)
+  message("finished!")
+}
+
+## plots
+for (ne in n_epochs) {
+  nn = 15
+  prefix <- paste0("tmp/umap/mnn.umap_nn_", nn, "_epochs_", ne)
+  u <- readRDS(paste0(prefix, ".rds"))
+  data.umap <- u$layout
+  colnames(data.umap) <- paste("UMAP", 1:2, sep="_")
+  object <- seu
+  object[["umap"]] <- CreateDimReducObject(embeddings = data.umap, assay = DefaultAssay(object), key = "UMAP_")
+  
+  png(file = paste0(prefix, ".png"), width = 15, height = 5, units = "in", res = 300)
+  plot(DimPlot(object, group.by = "seurat_clusters", split.by = "orig.ident", label = T) + 
+         ggtitle(paste0("n_neighbors: ", nn, "\tn_epochs: ", ne)))
+  dev.off()
+}
+
+for (nn in n_neighbors) {
+  ne = 200
+  prefix <- paste0("tmp/umap/mnn.umap_nn_", nn, "_epochs_", ne)
+  u <- readRDS(paste0(prefix, ".rds"))
+  data.umap <- u$layout
+  colnames(data.umap) <- paste("UMAP", 1:2, sep="_")
+  object <- seu
+  object[["umap"]] <- CreateDimReducObject(embeddings = data.umap, assay = DefaultAssay(object), key = "UMAP_")
+  
+  png(file = paste0(prefix, ".png"), width = 15, height = 5, units = "in", res = 300)
+  plot(DimPlot(object, group.by = "seurat_clusters", split.by = "orig.ident", label = T) + 
+         ggtitle(paste0("n_neighbors: ", nn, "\tn_epochs: ", ne)))
+  dev.off()
+}
+```
+
+```{r finalUmap, fig.width=6, fig.height=5}
+# set umap results
+nn = 100
+ne = 200
+prefix <- paste0("tmp/umap/mnn.umap_nn_", nn, "_epochs_", ne)
+
+u <- readRDS(paste0(prefix, ".rds"))
+data.umap <- u$layout
+colnames(data.umap) <- paste("UMAP", 1:2, sep="_")
+seu[["umap"]] <- CreateDimReducObject(embeddings = data.umap, assay = DefaultAssay(seu), key = "UMAP_")
+
+DimPlot(seu)
+```
+
+#### Redo clustering
+
+clustering on umap
+
+```{r cluster2, fig.width=16, fig.height=10}
+seu <- seu %>% 
+  FindNeighbors(dims = 1:2, reduction = "umap", k.param = 50, verbose = FALSE) %>% 
+  FindClusters(resolution = c(.1, .2, .4, .6, .8), verbose = FALSE)
+
+## plots
+cowplot::plot_grid(
+  DimPlot(seu, group.by = "RNA_snn_res.0.1", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.1"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.2", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.2"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.4", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.4"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.6", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.6"),
+  DimPlot(seu, group.by = "RNA_snn_res.0.8", label = T, label.size = 7) + NoLegend() + ggtitle("res=0.8"),
+  ncol = 3
+)
+
+## final clusters
+seu$seurat_clusters <- seu$RNA_snn_res.0.4
+
+## reorder clusters
+clusters.reorder <- c(21,17,15,18,10,13,12,16,4,11,2,7,22,5,0,1,9,3,14,8,6,23,19,20,24)
+seu$seurat_clusters.reorder <- plyr::mapvalues(seu$seurat_clusters, from = clusters.reorder, to = seq_along(clusters.reorder))
+seu$seurat_clusters.reorder <- factor(seu$seurat_clusters.reorder, levels = seq_along(clusters.reorder))
+```
+
+```{r finalClusters, fig.width=6, fig.height=5}
+DimPlot(seu, group.by = "seurat_clusters.reorder", label = T, label.size = 7) + NoLegend() 
+```
+
+```{r saveData}
+saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.rds")
+```
+
+
+
+```{r info}
+sessionInfo()
+```
+

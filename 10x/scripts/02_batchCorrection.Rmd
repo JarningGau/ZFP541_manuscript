@@ -1,0 +1,55 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(SeuratWrappers)
+library(tidyverse)
+```
+
+### Batch correction
+
+```{r loadData}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.rds")
+```
+
+```{r norm and hvgs}
+seu.list <- SplitObject(seu, split.by = "orig.ident")
+for (i in 1:length(seu.list)) {
+  seu.list[[i]] <- NormalizeData(seu.list[[i]], verbose = FALSE)
+  seu.list[[i]] <- FindVariableFeatures(seu.list[[i]], selection.method = "vst", 
+                                        nfeatures = 2000, verbose = FALSE)
+}
+```
+
+```{r mnnCorrect and umap, fig.width=8, fig.height=5}
+seu <- RunFastMNN(object.list = seu.list)
+seu <- RunUMAP(seu, reduction = "mnn", dims = 1:30)
+DimPlot(seu, split.by = "orig.ident") + NoLegend()
+```
+
+```{r markers, fig.width=8, fig.height=6}
+FeaturePlot(seu, features = c("Dazl","Vim"), pt.size = .5, split.by = "orig.ident", ncol = 2)       # germ cells vs somatic cells
+FeaturePlot(seu, features = c("Gfra1","Ccnd2"), pt.size = .5, split.by = "orig.ident", ncol = 2)    # Spermatogonia
+FeaturePlot(seu, features = c("Stra8","Gm4969"), pt.size = .5, split.by = "orig.ident", ncol = 2)   # pre leptotene spermatocytes
+FeaturePlot(seu, features = c("Zcwpw1","Prdm9"), pt.size = .5, split.by = "orig.ident", ncol = 2)   # leptotene spermatocytes
+FeaturePlot(seu, features = c("Meiob","Rad51ap2"), pt.size = .5, split.by = "orig.ident", ncol = 2) # zygotene  spermatocytes
+FeaturePlot(seu, features = c("Piwil1","Mybl1"), pt.size = .5, split.by = "orig.ident", ncol = 2)   # pachytene spermatocytes
+FeaturePlot(seu, features = c("Pou5f2","Ccna1"), pt.size = .5, split.by = "orig.ident", ncol = 2)   # diplotene spermatocytes
+FeaturePlot(seu, features = c("Sun5","Tex36"), pt.size = .5, split.by = "orig.ident", ncol = 2)     # round spermatids
+FeaturePlot(seu, features = c("Prm1","Cstl1"), pt.size = .5, split.by = "orig.ident", ncol = 2)     # enlongated spermatids
+```
+
+```{r saveData}
+saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.rds")
+```
+
+```{r info}
+sessionInfo()
+```
+

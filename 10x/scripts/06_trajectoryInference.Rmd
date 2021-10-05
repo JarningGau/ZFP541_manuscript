@@ -1,0 +1,124 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(princurve)
+library(tidyverse)
+```
+
+### Trajectory analysis
+
+```{r loadData}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+```
+
+```{r principleCurve}
+emb.umap <- Embeddings(seu, reduction = "umap")
+
+input = emb.umap
+df_start = 2
+df_end = 15 #
+df_range = df_start:df_end
+p.curve <- list()
+
+for(i in seq_along(df_range)){
+  cat(paste("Fitting princurve with df", df_range[i],"\n"))
+  
+  if(df_range[i] == df_start){
+    p.curve[[i]] <- principal_curve(input, df = df_range[i])
+  }else{
+    p.curve[[i]] <- principal_curve(input, df = df_range[i], start = p.curve[[i-1]])
+  }
+}
+names(p.curve) <- paste0("df_", df_range)
+
+for(i in seq_along(p.curve)){
+  plot(input)
+  lines(p.curve[[i]], col = "red", lwd = 3)
+  title(sub("_", " = ", names(p.curve)[i]))
+}
+```
+
+```{r pseudotime}
+### assign pseudotime
+df = "df_8"
+pseudotime <- cbind(p.curve[[df]]$s[p.curve[[df]]$ord, 1], p.curve[[df]]$s[p.curve[[df]]$ord, 2])
+find_pseudotime <- function(sample.point){ which.min(colSums((t(pseudotime) - c(sample.point))^2)) }
+cell_pseudotime <- apply(as.matrix(input), 1, find_pseudotime)
+all(names(cell_pseudotime) == colnames(seu)) # should be TRUE
+seu$pc.pseudotime <- -cell_pseudotime
+
+## plots
+VlnPlot(seu, group.by = "annotation", features = "pc.pseudotime", pt.size = 0) + NoLegend()
+```
+
+```{r plot func}
+get_path <- function(pc.curve, df="7"){
+  df = paste0("df_", df)
+  pc.curve[[df]]$s[pc.curve[[df]]$ord, ] %>% 
+    as.data.frame() %>% 
+    set_names("X", "Y") %>% 
+    distinct(X, Y)
+}
+
+get_arrow <- function(data.path, reverse = FALSE){
+  if (reverse) {
+    data.arrow <- data.frame(
+      X = head(data.path)[5, "X"],
+      Y = head(data.path)[5, "Y"],
+      Xend = head(data.path)[1, "X"],
+      Yend = head(data.path)[1, "Y"]
+    )
+  }else{
+    data.arrow <- data.frame(
+      X = tail(data.path)[1, "X"],
+      Y = tail(data.path)[1, "Y"],
+      Xend = tail(data.path)[5, "X"],
+      Yend = tail(data.path)[5, "Y"]
+    )
+  }
+  return(data.arrow)
+}
+```
+
+```{r final plots, fig.width=6, fig.height=5}
+## data
+dims = paste0("UMAP_", 1:2)
+meta = c("annotation", "pc.pseudotime")
+data.point <- FetchData(seu, vars = c(dims, meta))
+
+data.path <- get_path(p.curve, df=8)
+data.arrow <- get_arrow(data.path, reverse = T)
+
+## plots
+p <- ggplot() + 
+  geom_point(data = data.point, aes(UMAP_1, UMAP_2, color = pc.pseudotime), size = .2) + 
+  geom_path(data = data.path, aes(X,Y), size = 1) + 
+  geom_segment(data = data.arrow, aes(x = X, xend = Xend, y = Y, yend = Yend), 
+               arrow = arrow(length = unit(0.1, "in"), angle = 30, type = "closed"), size = 1) + 
+  theme_classic(base_size = 15) + 
+  theme(panel.grid = element_blank())
+p
+```
+
+
+```{r saveData}
+out.dir <- "tmp/trajectory/"
+dir.create(out.dir)
+saveRDS(p.curve, paste0(out.dir, "p.curve.rds"))
+
+## refresh final seurat object
+saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+```
+
+
+```{r info}
+sessionInfo()
+```
+

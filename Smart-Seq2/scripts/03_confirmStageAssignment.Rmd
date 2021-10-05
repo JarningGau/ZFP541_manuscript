@@ -1,0 +1,31 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (Smart-Seq2)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+options(stringsAsFactors = F)
+```
+
+To confirm stage assignment, we compared our single-cell profiles with published scRNA-seq data [Chen et al., 2018](https://www.nature.com/articles/s41422-018-0074-y)
+
+```{r, fig.width=8, fig.height=6}
+## load data
+dge.TPM <- read.table("../results/TableS2.GeneExpression(TPM).tsv", sep = "\t", row.names = 1)
+cellres <- readRDS("~/data/data3/jarning/public/TestisAtlas/data/cache/CellRes2018_30061742.rds")
+colnames(dge.TPM) <- paste0(rep(c("eP_WT","eP_KO","lP_WT","lP_KO"), each=3), rep(c(".r1",".r2",".r3"), 4))
+
+## choose common genes in both dataset
+select.genes <- intersect(rownames(cellres$mean_tpm), rownames(dge.TPM))
+mat <- cbind(cellres$mean_tpm[select.genes, ], dge.TPM[select.genes, ])
+
+## Pearson correlation
+corr <- cor(log2(mat+1), method = "pearson")
+
+## heatmap
+pheatmap::pheatmap(corr, cluster_cols = F, cluster_rows = F, display_numbers = T, number_color = "black")
+## show subset of the heatmap
+pheatmap::pheatmap(corr[9:nrow(corr),9:ncol(corr)], cluster_cols = F, cluster_rows = F, display_numbers = T, number_color = "black")
+```

@@ -1,0 +1,139 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (Smart-Seq2)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+options(stringsAsFactors = F)
+library(Seurat)
+library(tidyverse)
+```
+
+#### Load raw counts matrix
+
+```{r}
+data.dir <- "~/data/data3/jarning/seq-data/z541.ss2/rawCounts/"
+
+files <- list.files(path = data.dir, pattern = "Z*.tsv", full.names = T)
+dge.list <- pblapply(files, function(file) read.table(file, sep = "\t", header = T, row.names = 1))
+all(sapply(dge.list, function(x) all(rownames(dge.list[[1]]) == rownames(x))))
+
+all(rownames(dge.list[[1]]) == rownames(dge.list[[2]])) ## should be TRUE
+dge <- do.call(cbind, dge.list)
+
+dim(dge)
+
+## filter genes
+features <- read.table(paste0(data.dir, "features.txt"), sep = "\t", header = T, row.names = 1)
+features <- features %>% as_tibble() %>% 
+  filter(gene_type %in% c("protein_coding", "ERCC")) %>% ## only keep protein_coding genes
+  distinct(gene_name, .keep_all = T)
+
+dge.filter <- dge[features$gene_id, ]
+rownames(dge.filter) <- plyr::mapvalues(x = rownames(dge.filter), from = features$gene_id, to = features$gene_name)
+dim(dge.filter) ## 22,016 protein coding genes
+
+## expressed at least in 10 cells
+select.genes <- rowSums(dge.filter > 0) >= 10
+dge.filter <- dge.filter[select.genes, ]
+dim(dge.filter) ## 19,402 detected genes
+```
+
+#### QC and normalization
+
+```{r}
+## meta table
+meta <- read.table(paste0(data.dir, "library.meta.txt"), header = T)
+
+## calculate QC metrics
+ref.dir <- "~/data/data3/jarning/resource/mouse_gene_set.mm10/"
+ribo.genes <- read.table(paste0(ref.dir, "GO_ribosomal_subunit.txt"), header = T, sep = "\t")
+ribo.genes <- intersect(ribo.genes$Symbol, rownames(dge.filter))
+chrX.genes <- features %>% filter(stringr::str_starts(Chr, "chrX")) %>% `[[`("gene_name")
+chrX.genes <- intersect(chrX.genes, rownames(dge.filter))
+
+## save to seurat object
+seu <- CreateSeuratObject(dge.filter, assay = "RNA")
+seu$libraryID <- sapply(strsplit(colnames(seu), split = "\\."), function(x) x[1])
+seu$percent.ERCC <- PercentageFeatureSet(seu, pattern = "ERCC-")
+seu$percent.mito <- PercentageFeatureSet(seu, pattern = "mt-")
+seu$percent.ribo <- PercentageFeatureSet(seu, features = ribo.genes)
+seu$percent.chrX <- PercentageFeatureSet(seu, features = chrX.genes)
+seu$genotype <- plyr::mapvalues(seu$libraryID, from = meta$LibraryID, to = meta$Genotype)
+seu$stage <- plyr::mapvalues(seu$libraryID, from = meta$LibraryID, to = meta$Stage)
+seu$time.point <- plyr::mapvalues(seu$libraryID, from = meta$LibraryID, to = meta$Time.point)
+seu$group <- paste(seu$genotype, seu$stage, sep = ",")
+seu$genotype <- factor(seu$genotype, levels = c("WT", "Zfp541(-/-)"))
+seu$stage <- factor(seu$stage, levels = c("eP","lP"))
+
+## normalize
+seu <- NormalizeData(seu, scale.factor = 1e5)
+seu <- ScaleData(seu)
+```
+
+```{r, fig.width=12, fig.height=9}
+## QC plots
+features <- c("nCount_RNA", "nFeature_RNA", "percent.ERCC", "percent.mito", "percent.ribo", "percent.chrX", "Vim", "Clu")
+VlnPlot(seu, features = features, group.by = "libraryID", pt.size = 0, ncol = 2)
+```
+
+```{r}
+## filter cells
+kept.cells <- FetchData(seu, vars = features) %>% 
+  filter(nFeature_RNA > 2000) %>% 
+  filter(nCount_RNA > 5e4) %>% 
+  filter(percent.ERCC < 20) %>% 
+  filter(percent.mito < 5) %>% 
+  filter(Vim < 3) %>% 
+  filter(Clu < 4) %>% 
+  rownames()
+
+seu <- subset(seu, cells = kept.cells) ## 929 of 1152 cells left
+
+table(seu$libraryID)
+# Z1 Z10 Z11 Z12  Z2  Z3  Z4  Z5  Z6  Z7  Z8  Z9 
+# 52  85  82  68  77  70  93  94  80  50  89  89 
+```
+
+#### Dimensionality reduction and clustering
+
+```{r, message=FALSE, warning=FALSE}
+seu <- SCTransform(seu, verbose = F)
+seu <- RunPCA(seu, npcs = 30, verbose = F)
+
+## kept PCs contains 80% total variance (PC1-PC4)
+cumsum(seu[["pca"]]@stdev ** 2 / sum(seu[["pca"]]@stdev ** 2))
+```
+
+```{r, fig.width=12, fig.height=5}
+## check PCA loadings
+VizDimLoadings(seu, dims = 1:4, reduction = "pca", balanced = T, ncol = 4)
+```
+
+```{r, fig.width=8, fig.height=4}
+## kmeans clustering, k=5
+set.seed(1024)
+kmeans.res <- kmeans(x = seu[["pca"]]@cell.embeddings[, 1:4] %>% as.matrix(), centers = 5)
+seu$kmeans.k5 <- kmeans.res$cluster
+DimPlot(seu, group.by = "kmeans.k5", shape.by = "genotype", split.by = "time.point", pt.size = 2)
+## check markers
+markers <- c("Dazl", "Vim", "Cenpa", "percent.chrX", "Mybl1", "Piwil1", "Pou5f2", "Ccna1")
+VlnPlot(seu, features = markers, group.by = "kmeans.k5", pt.size = 0, ncol = 4, assay = "RNA")
+```
+
+```{r}
+## cluster annotation
+seu$cluster.annotation <- plyr::mapvalues(seu$kmeans.k5, from = 1:5, to = c("pre-meiotic", "early pachytene", "early pachytene", "late pachytene", "late pachytene"))
+Idents(seu) <- factor(seu$cluster.annotation, levels = c("pre-meiotic", "early pachytene", "late pachytene"))
+```
+
+#### Save results
+
+```{r}
+meta.data <- FetchData(seu, vars = c("PC_1", "PC_2"))
+meta.data <- cbind(seu@meta.data, meta.data)
+write.table(meta.data, "~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.metadata.tsv", sep = "\t", quote = F)
+saveRDS(seu, "~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_processed.rds")
+```

@@ -1,0 +1,65 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(tidyverse)
+```
+
+#### Cell annotation
+
+```{r loadData}
+seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.rds")
+```
+
+
+```{r annotation, fig.width=10, fig.height=5}
+cluster.annotation <- read_tsv("../data/clusters.annotations.txt")
+seu$annotation <- plyr::mapvalues(seu$seurat_clusters.reorder, cluster.annotation$cluster_index, cluster.annotation$annotation)
+DimPlot(seu, group.by = "annotation", label = T, label.size = 5, split.by = "orig.ident") + NoLegend()
+```
+
+```{r knownMarkers, fig.width=8, fig.height=5}
+DotPlot(seu, group.by = "annotation",
+        features = c("Dazl","Nanos3",
+                     "Ccnd2","Kit",
+                     "Stra8","Gm4969",
+                     "Dmc1",
+                     "Meiob","Rad51ap2",
+                     "Rpl10","Rpl10l",
+                     "Mybl1","Piwil1",
+                     "Pou5f2","Ccna1",
+                     "Tex36","Acrv1",
+                     "Prm1","Cstl1")) + 
+  labs(x = "", y = "") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r saveData}
+## seurat object
+saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+
+## metadata
+meta.data <- seu@meta.data
+emb <- FetchData(seu, vars = c("UMAP_1", "UMAP_2"))
+meta.data <- cbind(meta.data, emb[rownames(meta.data), ])
+meta.data <- meta.data %>% mutate(cellID = rownames(meta.data), .before = "orig.ident")
+write_tsv(meta.data, "~/data/data3/jarning/seq-data/z541.10X/cell_metadata.tsv")
+
+## matrix
+Matrix::writeMM(seu[["RNA"]]@counts, "~/data/data3/jarning/seq-data/z541.10X/processed_data/merged_matrix.mtx")
+writeLines(rownames(seu), "~/data/data3/jarning/seq-data/z541.10X/processed_data/merged_features.tsv")
+writeLines(colnames(seu), "~/data/data3/jarning/seq-data/z541.10X/processed_data/merged_barcodes.tsv")
+```
+
+
+
+```{r info}
+sessionInfo()
+```
+

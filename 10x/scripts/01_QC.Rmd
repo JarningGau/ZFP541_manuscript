@@ -1,0 +1,57 @@
+---
+title: "Single-cell RNAseq of ZFP541 manuscript (10x)"
+author: "Jarning"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+---
+
+```{r setup}
+options(stringsAsFactors = F)
+library(Seurat)
+library(tidyverse)
+```
+
+### Quanlity control
+
+```{r loadData}
+data.mtx <- list(
+  WT = Read10X("../data/matrix/WT/"),
+  Z541 = Read10X("../data/matrix/Zfp541/")
+)
+
+for (i in seq_along(data.mtx)) {
+  colnames(data.mtx[[i]]) <- paste0(names(data.mtx)[i], "_", colnames(data.mtx[[i]]))
+}
+
+lapply(data.mtx, dim)
+
+data.mtx <- do.call(cbind, data.mtx)
+
+dim(data.mtx)
+```
+
+```{r qc, fig.width=5, fig.height=5}
+ribo.genes <- readxl::read_excel("../reference/GO_term_ribosomal_subunit.xlsx")
+ribo.genes <- ribo.genes %>% distinct(Symbol)
+ribo.genes <- intersect(ribo.genes$Symbol, rownames(data.mtx))
+
+## calculate QC metrics
+seu <- CreateSeuratObject(counts = data.mtx)
+seu[["percent.mt"]] <- PercentageFeatureSet(seu, pattern = "^mt-")
+seu[["percent.ribo"]] <- PercentageFeatureSet(seu, features = ribo.genes)
+
+## plot
+VlnPlot(seu, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.ribo"), ncol = 2, pt.size = 0, log = T)
+
+## cell QC
+seu$QC <- ifelse(seu$percent.mt<=10 & seu$nFeature_RNA>=1000, "pass", "fail")
+seu@meta.data %>% as_tibble() %>% count(orig.ident, QC)
+seu.filter <- subset(seu, QC == "pass")
+
+saveRDS(seu.filter, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.rds")
+```
+
+```{r info}
+sessionInfo()
+```
+
