@@ -8,7 +8,7 @@ output: html_document
 ```{r setup}
 options(stringsAsFactors = F)
 library(Seurat)
-library(magic)
+library(Rmagic)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 ```
@@ -18,7 +18,7 @@ library(tidyverse)
 To explore the functional roles of ZFP541 in transcriptional regulation, we characterized the gene expression dynamics using our 10x scRNA-seq data. We fitted the principle curve on the UMAP embeddings to calculate the pseudotime for each cell (`06_trajectoryInference.Rmd`) and imputed the inflated zeros of our scRNA-seq digital expression matrixes for WT and Zfp541-/- germ cells respectively using MAGIC [van Dijk et al., 2018](https://pubmed.ncbi.nlm.nih.gov/29961576/)
 
 ```{r loadData}
-seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+seu <- readRDS("../data/seu.QC.batchCorrect.cluster.final.rds")
 seu$orig.ident <- factor(seu$orig.ident, levels = c("WT","Z541"))
 seu$genotype <- plyr::mapvalues(seu$orig.ident, c("WT","Z541"), c("WT", "Zfp541(-/-)"))
 
@@ -47,7 +47,7 @@ seu.magic$annotation <- factor(seu.magic$annotation, levels = levels(seu$annotat
 ```
 
 ```{r saveData}
-saveRDS(seu.magic, "~/data/data3/jarning/seq-data/z541.10X/seu.magic.rds")
+saveRDS(seu.magic, "../data/seu.magic.rds")
 ```
 
 

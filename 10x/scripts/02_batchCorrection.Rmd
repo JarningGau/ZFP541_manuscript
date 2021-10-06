@@ -15,7 +15,7 @@ library(tidyverse)
 ### Batch correction
 
 ```{r loadData}
-seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.rds")
+seu <- readRDS("tmp/01.seu.QC.rds")
 ```
 
 ```{r norm and hvgs}
@@ -46,7 +46,7 @@ FeaturePlot(seu, features = c("Prm1","Cstl1"), pt.size = .5, split.by = "orig.id
 ```
 
 ```{r saveData}
-saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.rds")
+saveRDS(seu, "tmp/02.seu.QC.batchCorrect.rds")
 ```
 
 ```{r info}

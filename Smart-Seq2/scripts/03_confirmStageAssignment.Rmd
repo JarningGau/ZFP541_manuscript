@@ -14,7 +14,7 @@ To confirm stage assignment, we compared our single-cell profiles with published
 ```{r, fig.width=8, fig.height=6}
 ## load data
 dge.TPM <- read.table("../results/TableS2.GeneExpression(TPM).tsv", sep = "\t", row.names = 1)
-cellres <- readRDS("~/data/data3/jarning/public/TestisAtlas/data/cache/CellRes2018_30061742.rds")
+cellres <- readRDS("../data/CellRes2018_30061742.rds")
 colnames(dge.TPM) <- paste0(rep(c("eP_WT","eP_KO","lP_WT","lP_KO"), each=3), rep(c(".r1",".r2",".r3"), 4))
 
 ## choose common genes in both dataset

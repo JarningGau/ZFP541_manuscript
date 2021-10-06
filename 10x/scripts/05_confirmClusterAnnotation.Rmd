@@ -17,8 +17,8 @@ library(tidyverse)
 To confirm stage assignment, we compared our single-cell profiles with published scRNA-seq data [Chen et al., 2018](https://www.nature.com/articles/s41422-018-0074-y)
 
 ```{r loadData}
-seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
-chen2018 <- readRDS("~/data/data3/jarning/public/TestisAtlas/data/cache/CellRes2018_30061742.rds")
+seu <- readRDS("../data/seu.QC.batchCorrect.cluster.final.rds")
+chen2018 <- readRDS("../data/CellRes2018_30061742.rds")
 
 seu.1 <- CreateSeuratObject(seu@assays$RNA@counts)
 seu.2 <- CreateSeuratObject(chen2018$counts)
@@ -29,7 +29,7 @@ seu.1$tech = "10X"
 seu.2$tech = "smart-seq"
 
 seu.1$celltype <- seu$annotation
-seu.2$celltype <- chen2018$cell_type[colnames(seu.1), 1]
+seu.2$celltype <- chen2018$cell_type[colnames(seu.2), 1]
 
 seu.1$batch = seu$orig.ident
 seu.2$batch <- "smart-seq"
@@ -124,7 +124,7 @@ cowplot::plot_grid(p2,p3,lgd, rel_widths = c(0.4,0.4,0.2), nrow = 1)
 ```
 
 ```{r saveData}
-out.dir <- "tmp/confirmCellAnnotation/"
+out.dir <- "../data/confirmCellAnnotation/"
 dir.create(out.dir)
 write_tsv(data.use, paste0(out.dir, "cell_meta.integratedChen2018.tsv"))
 ```

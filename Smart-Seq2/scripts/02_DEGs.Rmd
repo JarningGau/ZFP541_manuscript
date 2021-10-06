@@ -8,6 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 options(stringsAsFactors = F)
 library(DESeq2)
+library(Seurat)
+library(pbapply)
 library(clusterProfiler)
 library(tidyverse)
 ```
@@ -15,7 +17,7 @@ library(tidyverse)
 #### Build pseudo-bulk matrix
 
 ```{r}
-seu <- readRDS("~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_processed.rds")
+seu <- readRDS("../data/z541_ss2.seu_processed.rds")
 
 ## select cells
 data <- seu@meta.data
@@ -35,7 +37,7 @@ seu.filter$abbr.cell_type <- plyr::mapvalues(
   to = c("eP", "lP")
 )
 
-saveRDS(seu.filter, "~/data/data3/jarning/seq-data/z541.ss2/z541_ss2.seu_final.rds")
+saveRDS(seu.filter, "../data/z541_ss2.seu_final.rds")
 ```
 
 ```{r}
@@ -63,7 +65,7 @@ dge.counts <- pblapply(groups, function(xx) {
   dge.group
 })
 names(dge.counts) <- names(groups)
-saveRDS(dge.counts, "~/data/data3/jarning/seq-data/z541.ss2/pseudo-bulk.counts.rds")
+saveRDS(dge.counts, "../data/pseudo-bulk.counts.rds")
 ```
 
 #### Bulk expression matrix

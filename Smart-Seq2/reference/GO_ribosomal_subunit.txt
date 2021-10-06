@@ -1,0 +1,426 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:1919900	2810006K23Rik	RIKEN cDNA 2810006K23 gene	5		mitochondrial large ribosomal subunit			IBA	PTN000117736 	J:265628 
+MGI:1929538	Dap3	death associated protein 3	3		mitochondrial small ribosomal subunit			IBA	PTN000301682 	J:265628 
+MGI:1929538	Dap3	death associated protein 3	3		small ribosomal subunit			IEA	IPR008092 	J:72247 
+MGI:103064	Ddx3x	DEAD box helicase 3, X-linked	X	colocalizes_with	cytosolic small ribosomal subunit			ISO	O00571 	J:164563 
+MGI:2145374	Dhx29	DEAH (Asp-Glu-Ala-His) box polypeptide 29	13		cytosolic small ribosomal subunit			ISO	Q7Z478 	J:164563 
+MGI:1098684	Eif2a	eukaryotic translation initiation factor 2A	3		cytosolic small ribosomal subunit			IBA	PTN000325517 	J:265628 
+MGI:109342	Eif2d	eukaryotic translation initiation factor 2D	1	colocalizes_with	cytosolic small ribosomal subunit			IBA	PTN000259347 	J:265628 
+MGI:109342	Eif2d	eukaryotic translation initiation factor 2D	1	colocalizes_with	cytosolic small ribosomal subunit			ISO	P41214 	J:164563 
+MGI:102547	Fau	Finkel-Biskis-Reilly murine sarcoma virus (FBR-MuSV) ubiquitously expressed (fox derived)	19		cytosolic small ribosomal subunit			ISO	P62861 	J:164563 
+MGI:3781727	Gm3550	predicted gene 3550	18		cytosolic large ribosomal subunit			IBA	PTN000306390 	J:265628 
+MGI:3647029	Gm6133	predicted gene 6133	18		cytosolic large ribosomal subunit			IBA	PTN000174131 	J:265628 
+MGI:3648757	Gm6525	predicted pseudogene 6525	3		cytosolic large ribosomal subunit			IBA	PTN000042522 	J:265628 
+MGI:3649357	Gm14214	predicted gene 14214	2		cytosolic large ribosomal subunit			IBA	PTN000559990 	J:265628 
+MGI:3644991	Gm15013	predicted gene 15013	X		cytosolic small ribosomal subunit			IBA	PTN000171891 	J:265628 
+MGI:5141974	Gm20509	predicted gene 20509	9		cytosolic large ribosomal subunit			IBA	PTN000846433 	J:265628 
+MGI:5804828	Gm45713	predicted gene 45713	7		cytosolic large ribosomal subunit			IBA	PTN000166703 	J:265628 
+MGI:6215179	Gm49711	predicted gene, 49711	16		mitochondrial small ribosomal subunit			IBA	PTN000470371 	J:265628 
+MGI:6270466	Gm49804	predicted gene, 49804	17		cytosolic small ribosomal subunit			IBA	PTN000254423 	J:265628 
+MGI:96015	Hba-a1	hemoglobin alpha, adult chain 1	11		cytosolic small ribosomal subunit			ISO	P69905 	J:164563 
+MGI:96016	Hba-a2	hemoglobin alpha, adult chain 2	11		cytosolic small ribosomal subunit			ISO	P69905 	J:164563 
+MGI:1855694	Isg15	ISG15 ubiquitin-like modifier	4		cytosolic small ribosomal subunit			IBA	PTN002241455 	J:265628 
+MGI:1855694	Isg15	ISG15 ubiquitin-like modifier	4		small ribosomal subunit			IBA	PTN002241455 	J:265628 
+MGI:2443114	Larp4	La ribonucleoprotein domain family, member 4	15	colocalizes_with	cytosolic small ribosomal subunit			ISO	Q71RC2 	J:164563 
+MGI:1922843	Malsu1	mitochondrial assembly of ribosomal large subunit 1	6	colocalizes_with	mitochondrial large ribosomal subunit			ISO	Q96EH3 	J:164563 
+MGI:1916245	Mcts1	malignant T cell amplified sequence 1	X	colocalizes_with	cytosolic small ribosomal subunit			ISO	Q9ULC4 	J:164563 
+MGI:2146020	Mief1	mitochondrial elongation factor 1	15	colocalizes_with	mitochondrial large ribosomal subunit			ISO	L0R8F8 	J:164563 
+MGI:2681846	Mpv17l2	MPV17 mitochondrial membrane protein-like 2	8		mitochondrial large ribosomal subunit			ISO	Q567V2 	J:164563 
+MGI:2137202	Mrpl1	mitochondrial ribosomal protein L1	5		cytosolic large ribosomal subunit			IBA	PTN000559990 	J:265628 
+MGI:2137202	Mrpl1	mitochondrial ribosomal protein L1	5		large ribosomal subunit			IEA	IPR005879 	J:72247 
+MGI:2137202	Mrpl1	mitochondrial ribosomal protein L1	5		mitochondrial large ribosomal subunit			ISO	NP_001095314 	J:73065 
+MGI:1351622	Mrpl2	mitochondrial ribosomal protein L2	17		mitochondrial large ribosomal subunit			IBA	PTN000343651 	J:265628 
+MGI:1351622	Mrpl2	mitochondrial ribosomal protein L2	17		mitochondrial large ribosomal subunit			ISA	X01563 	J:58917 
+MGI:1351622	Mrpl2	mitochondrial ribosomal protein L2	17		mitochondrial large ribosomal subunit			ISO	Q5T653 	J:164563 
+MGI:2137204	Mrpl3	mitochondrial ribosomal protein L3	9		mitochondrial large ribosomal subunit			IBA	PTN000132424 	J:265628 
+MGI:2137204	Mrpl3	mitochondrial ribosomal protein L3	9		mitochondrial large ribosomal subunit			ISO	NP_001073786 	J:73065 
+MGI:2137204	Mrpl3	mitochondrial ribosomal protein L3	9		mitochondrial large ribosomal subunit			ISO	P09001 	J:164563 
+MGI:2137210	Mrpl4	mitochondrial ribosomal protein L4	9		mitochondrial large ribosomal subunit			ISO	Q9BYD3 	J:164563 
+MGI:2137211	Mrpl9	mitochondrial ribosomal protein L9	3		mitochondrial large ribosomal subunit			ISO	Q9BYD2 	J:164563 
+MGI:1333801	Mrpl10	mitochondrial ribosomal protein L10	11		large ribosomal subunit			IBA	PTN000169209 	J:265628 
+MGI:1333801	Mrpl10	mitochondrial ribosomal protein L10	11		mitochondrial large ribosomal subunit			IBA	PTN000901508 	J:265628 
+MGI:1333801	Mrpl10	mitochondrial ribosomal protein L10	11		mitochondrial large ribosomal subunit			ISO	Q7Z7H8 	J:164563 
+MGI:1333801	Mrpl10	mitochondrial ribosomal protein L10	11		mitochondrial large ribosomal subunit			ISS		J:51617 
+MGI:2137215	Mrpl11	mitochondrial ribosomal protein L11	19		large ribosomal subunit			IBA	PTN000184007 	J:265628 
+MGI:2137215	Mrpl11	mitochondrial ribosomal protein L11	19		mitochondrial large ribosomal subunit			IBA	PTN000184137 	J:265628 
+MGI:2137215	Mrpl11	mitochondrial ribosomal protein L11	19		mitochondrial large ribosomal subunit			ISO	NP_001014932 	J:73065 
+MGI:2137215	Mrpl11	mitochondrial ribosomal protein L11	19		mitochondrial large ribosomal subunit			ISO	Q9Y3B7 	J:164563 
+MGI:1926273	Mrpl12	mitochondrial ribosomal protein L12	11		mitochondrial large ribosomal subunit			IBA	PTN002553550 	J:265628 
+MGI:1926273	Mrpl12	mitochondrial ribosomal protein L12	11		mitochondrial large ribosomal subunit			ISO	P52815 	J:164563 
+MGI:2137218	Mrpl13	mitochondrial ribosomal protein L13	15		mitochondrial large ribosomal subunit			IBA	PTN000166799 	J:265628 
+MGI:2137218	Mrpl13	mitochondrial ribosomal protein L13	15		mitochondrial large ribosomal subunit			ISO	NP_001029977 	J:73065 
+MGI:2137218	Mrpl13	mitochondrial ribosomal protein L13	15		mitochondrial large ribosomal subunit			ISO	Q9BYD1 	J:164563 J:175816 
+MGI:1333864	Mrpl14	mitochondrial ribosomal protein L14	17		mitochondrial large ribosomal subunit			ISO	Q6P1L8 	J:164563 
+MGI:1351639	Mrpl15	mitochondrial ribosomal protein L15	1		large ribosomal subunit			IEA	IPR005749 IPR030878 	J:72247 
+MGI:1351639	Mrpl15	mitochondrial ribosomal protein L15	1		mitochondrial large ribosomal subunit			IBA	PTN000309578 	J:265628 
+MGI:1351639	Mrpl15	mitochondrial ribosomal protein L15	1		mitochondrial large ribosomal subunit			ISA	S78757 	J:58917 
+MGI:1351639	Mrpl15	mitochondrial ribosomal protein L15	1		mitochondrial large ribosomal subunit			ISO	Q9P015 	J:164563 
+MGI:2137219	Mrpl16	mitochondrial ribosomal protein L16	19		mitochondrial large ribosomal subunit			IBA	PTN000259457 	J:265628 
+MGI:2137219	Mrpl16	mitochondrial ribosomal protein L16	19		mitochondrial large ribosomal subunit			ISO	NP_001029813 	J:73065 
+MGI:2137219	Mrpl16	mitochondrial ribosomal protein L16	19		mitochondrial large ribosomal subunit			ISO	Q9NX20 	J:164563 
+MGI:1351608	Mrpl17	mitochondrial ribosomal protein L17	7		large ribosomal subunit			IBA	PTN000373768 	J:265628 
+MGI:1351608	Mrpl17	mitochondrial ribosomal protein L17	7		mitochondrial large ribosomal subunit			IBA	PTN001024656 	J:265628 
+MGI:1351608	Mrpl17	mitochondrial ribosomal protein L17	7		mitochondrial large ribosomal subunit			ISA	S78759 	J:58917 
+MGI:1351608	Mrpl17	mitochondrial ribosomal protein L17	7		mitochondrial large ribosomal subunit			ISO	Q9NRX2 	J:164563 
+MGI:1914931	Mrpl18	mitochondrial ribosomal protein L18	17		mitochondrial large ribosomal subunit			ISO	Q9H0U6 	J:164563 
+MGI:1926274	Mrpl19	mitochondrial ribosomal protein L19	6		mitochondrial large ribosomal subunit			IBA	PTN000402784 	J:265628 
+MGI:1926274	Mrpl19	mitochondrial ribosomal protein L19	6		mitochondrial large ribosomal subunit			ISO	P49406 	J:164563 
+MGI:2137221	Mrpl20	mitochondrial ribosomal protein L20	4		mitochondrial large ribosomal subunit			ISO	NP_001033595 	J:73065 
+MGI:2137221	Mrpl20	mitochondrial ribosomal protein L20	4		mitochondrial large ribosomal subunit			ISO	Q9BYC9 	J:164563 
+MGI:2660674	Mrpl21	mitochondrial ribosomal protein L21	19		mitochondrial large ribosomal subunit			IBA	PTN000482432 	J:265628 
+MGI:2660674	Mrpl21	mitochondrial ribosomal protein L21	19		mitochondrial large ribosomal subunit			ISO	Q7Z2W9 	J:164563 
+MGI:1333794	Mrpl22	mitochondrial ribosomal protein L22	11		large ribosomal subunit			IBA	PTN000337444 	J:265628 
+MGI:1333794	Mrpl22	mitochondrial ribosomal protein L22	11		mitochondrial large ribosomal subunit			IBA	PTN000337445 	J:265628 
+MGI:1333794	Mrpl22	mitochondrial ribosomal protein L22	11		mitochondrial large ribosomal subunit			ISO	Q9NWU5 	J:164563 
+MGI:1196612	Mrpl23	mitochondrial ribosomal protein L23	7		mitochondrial large ribosomal subunit			IBA	PTN000248673 	J:265628 
+MGI:1196612	Mrpl23	mitochondrial ribosomal protein L23	7		mitochondrial large ribosomal subunit			ISO	XP_001249877 	J:73065 
+MGI:1196612	Mrpl23	mitochondrial ribosomal protein L23	7		mitochondrial large ribosomal subunit			ISO	Q16540 	J:164563 
+MGI:1914957	Mrpl24	mitochondrial ribosomal protein L24	3		mitochondrial large ribosomal subunit			ISO	Q96A35 	J:164563 
+MGI:2137224	Mrpl27	mitochondrial ribosomal protein L27	11		mitochondrial large ribosomal subunit			IBA	PTN000407639 	J:265628 
+MGI:2137224	Mrpl27	mitochondrial ribosomal protein L27	11		mitochondrial large ribosomal subunit			ISO	NP_001032530 	J:73065 
+MGI:2137224	Mrpl27	mitochondrial ribosomal protein L27	11		mitochondrial large ribosomal subunit			ISO	Q9P0M9 	J:164563 
+MGI:1915861	Mrpl28	mitochondrial ribosomal protein L28	17		mitochondrial large ribosomal subunit			IBA	PTN000338550 	J:265628 
+MGI:1915861	Mrpl28	mitochondrial ribosomal protein L28	17		mitochondrial large ribosomal subunit			ISO	Q13084 	J:164563 
+MGI:1333820	Mrpl30	mitochondrial ribosomal protein L30	1		large ribosomal subunit			IEA	IPR005996 	J:72247 
+MGI:1333820	Mrpl30	mitochondrial ribosomal protein L30	1		mitochondrial large ribosomal subunit			ISO	Q8TCC3 	J:164563 
+MGI:2137226	Mrpl32	mitochondrial ribosomal protein L32	13		large ribosomal subunit			IEA	IPR002677 	J:72247 
+MGI:2137226	Mrpl32	mitochondrial ribosomal protein L32	13		mitochondrial large ribosomal subunit			IBA	PTN001464365 	J:265628 
+MGI:2137226	Mrpl32	mitochondrial ribosomal protein L32	13		mitochondrial large ribosomal subunit			ISO	NP_001033768 	J:73065 
+MGI:2137226	Mrpl32	mitochondrial ribosomal protein L32	13		mitochondrial large ribosomal subunit			ISO	Q9BYC8 	J:164563 
+MGI:2137225	Mrpl33	mitochondrial ribosomal protein L33	5		mitochondrial large ribosomal subunit			ISO	O75394 	J:164563 
+MGI:2137227	Mrpl34	mitochondrial ribosomal protein L34	8		mitochondrial large ribosomal subunit			IBA	PTN000376336 	J:265628 
+MGI:2137227	Mrpl34	mitochondrial ribosomal protein L34	8		mitochondrial large ribosomal subunit			ISO	NP_001103657 	J:73065 
+MGI:2137227	Mrpl34	mitochondrial ribosomal protein L34	8		mitochondrial large ribosomal subunit			ISO	Q9BQ48 	J:164563 
+MGI:1913473	Mrpl35	mitochondrial ribosomal protein L35	6		mitochondrial large ribosomal subunit			ISO	Q9NZE8 	J:164563 
+MGI:2137228	Mrpl36	mitochondrial ribosomal protein L36	13		mitochondrial large ribosomal subunit			IBA	PTN000428162 	J:265628 
+MGI:2137228	Mrpl36	mitochondrial ribosomal protein L36	13		mitochondrial large ribosomal subunit			ISO	XP_580819 	J:73065 
+MGI:2137228	Mrpl36	mitochondrial ribosomal protein L36	13		mitochondrial large ribosomal subunit			ISO	Q9P0J6 	J:164563 
+MGI:1926268	Mrpl37	mitochondrial ribosomal protein L37	4		mitochondrial large ribosomal subunit			ISO	Q9BZE1 	J:164563 
+MGI:1926269	Mrpl38	mitochondrial ribosomal protein L38	11		mitochondrial large ribosomal subunit			IBA	PTN000889369 	J:265628 
+MGI:1926269	Mrpl38	mitochondrial ribosomal protein L38	11		mitochondrial large ribosomal subunit			ISO	Q96DV4 	J:164563 
+MGI:1351620	Mrpl39	mitochondrial ribosomal protein L39	16		mitochondrial large ribosomal subunit			ISA	S78756 	J:58917 
+MGI:1351620	Mrpl39	mitochondrial ribosomal protein L39	16		mitochondrial large ribosomal subunit			ISO	Q9NYK5 	J:164563 
+MGI:1332635	Mrpl40	mitochondrial ribosomal protein L40	16		mitochondrial large ribosomal subunit			ISO	Q9NQ50 	J:164563 
+MGI:1333816	Mrpl41	mitochondrial ribosomal protein L41	2		mitochondrial large ribosomal subunit			IBA	PTN000481942 	J:265628 
+MGI:1333816	Mrpl41	mitochondrial ribosomal protein L41	2		mitochondrial large ribosomal subunit			ISO	Q8IXM3 	J:164563 
+MGI:1333774	Mrpl42	mitochondrial ribosomal protein L42	10		mitochondrial large ribosomal subunit			IBA	PTN002298037 	J:265628 
+MGI:1333774	Mrpl42	mitochondrial ribosomal protein L42	10		mitochondrial large ribosomal subunit			ISO	Q9Y6G3 	J:164563 
+MGI:1333774	Mrpl42	mitochondrial ribosomal protein L42	10		mitochondrial small ribosomal subunit			ISO	Q9Y6G3 	J:164563 
+MGI:2137229	Mrpl43	mitochondrial ribosomal protein L43	19		mitochondrial large ribosomal subunit			IBA	PTN000483648 	J:265628 
+MGI:2137229	Mrpl43	mitochondrial ribosomal protein L43	19		mitochondrial large ribosomal subunit			ISO	NP_776988 	J:73065 
+MGI:2137229	Mrpl43	mitochondrial ribosomal protein L43	19		mitochondrial large ribosomal subunit			ISO	Q8N983 	J:164563 
+MGI:1916413	Mrpl44	mitochondrial ribosomal protein L44	1		mitochondrial large ribosomal subunit			ISO	Q9H9J2 	J:164563 
+MGI:1914286	Mrpl45	mitochondrial ribosomal protein L45	11		mitochondrial large ribosomal subunit			ISO	Q9BRJ2 	J:164563 
+MGI:1914558	Mrpl46	mitochondrial ribosomal protein L46	7		mitochondrial large ribosomal subunit			IBA	PTN000319538 	J:265628 
+MGI:1914558	Mrpl46	mitochondrial ribosomal protein L46	7		mitochondrial large ribosomal subunit			ISO	Q9H2W6 	J:164563 
+MGI:1921850	Mrpl47	mitochondrial ribosomal protein L47	3		mitochondrial large ribosomal subunit			IBA	PTN000476023 	J:265628 
+MGI:1921850	Mrpl47	mitochondrial ribosomal protein L47	3		mitochondrial large ribosomal subunit			ISO	Q9HD33 	J:164563 
+MGI:1289321	Mrpl48	mitochondrial ribosomal protein L48	7		mitochondrial large ribosomal subunit			ISO	Q96GC5 	J:164563 
+MGI:108180	Mrpl49	mitochondrial ribosomal protein L49	19		mitochondrial large ribosomal subunit			IBA	PTN000336627 	J:265628 
+MGI:108180	Mrpl49	mitochondrial ribosomal protein L49	19		mitochondrial large ribosomal subunit			ISO	Q13405 	J:164563 
+MGI:107329	Mrpl50	mitochondrial ribosomal protein L50	4		mitochondrial large ribosomal subunit			IBA	PTN001268005 	J:265628 
+MGI:107329	Mrpl50	mitochondrial ribosomal protein L50	4		mitochondrial large ribosomal subunit			ISO	Q8N5N7 	J:164563 
+MGI:1913743	Mrpl51	mitochondrial ribosomal protein L51	6		mitochondrial large ribosomal subunit			IBA	PTN000334228 	J:265628 
+MGI:1913743	Mrpl51	mitochondrial ribosomal protein L51	6		mitochondrial large ribosomal subunit			ISO	Q4U2R6 	J:164563 
+MGI:1916086	Mrpl52	mitochondrial ribosomal protein L52	14		mitochondrial large ribosomal subunit			IBA	PTN002147340 	J:265628 
+MGI:1916086	Mrpl52	mitochondrial ribosomal protein L52	14		mitochondrial large ribosomal subunit			ISO	Q86TS9 	J:164563 
+MGI:1915749	Mrpl53	mitochondrial ribosomal protein L53	6		mitochondrial large ribosomal subunit			ISO	Q96EL3 	J:164563 
+MGI:1913297	Mrpl54	mitochondrial ribosomal protein L54	10		mitochondrial large ribosomal subunit			IBA	PTN002006205 	J:265628 
+MGI:1913297	Mrpl54	mitochondrial ribosomal protein L54	10		mitochondrial large ribosomal subunit			ISO	Q6P161 	J:164563 
+MGI:1914462	Mrpl55	mitochondrial ribosomal protein L55	11		mitochondrial large ribosomal subunit			IBA	PTN002147485 	J:265628 
+MGI:1914462	Mrpl55	mitochondrial ribosomal protein L55	11		mitochondrial large ribosomal subunit			ISO	Q7Z7F7 	J:164563 
+MGI:1915090	Mrpl57	mitochondrial ribosomal protein L57	14		mitochondrial large ribosomal subunit			ISO	Q9BQC6 	J:164563 
+MGI:1915822	Mrpl58	mitochondrial ribosomal protein L58	11		mitochondrial large ribosomal subunit			IBA	PTN000117598 	J:265628 
+MGI:1915822	Mrpl58	mitochondrial ribosomal protein L58	11		mitochondrial large ribosomal subunit			ISO	Q14197 	J:164563 
+MGI:2153089	Mrps2	mitochondrial ribosomal protein S2	2		mitochondrial small ribosomal subunit			IBA	PTN000283442 	J:265628 
+MGI:2153089	Mrps2	mitochondrial ribosomal protein S2	2		mitochondrial small ribosomal subunit			ISO	Q9Y399 	J:164563 
+MGI:2153089	Mrps2	mitochondrial ribosomal protein S2	2		mitochondrial small ribosomal subunit			ISS	P82923 	J:72140 
+MGI:2153089	Mrps2	mitochondrial ribosomal protein S2	2		small ribosomal subunit			IEA	IPR005706 	J:72247 
+MGI:1924971	Mrps5	mitochondrial ribosomal protein S5	2		mitochondrial small ribosomal subunit			IBA	PTN000346855 	J:265628 
+MGI:1924971	Mrps5	mitochondrial ribosomal protein S5	2		mitochondrial small ribosomal subunit			ISO	P82675 	J:164563 
+MGI:2153111	Mrps6	mitochondrial ribosomal protein S6	16		mitochondrial small ribosomal subunit			IBA	PTN000470371 	J:265628 
+MGI:2153111	Mrps6	mitochondrial ribosomal protein S6	16		mitochondrial small ribosomal subunit			ISO	P82932 	J:164563 
+MGI:2153111	Mrps6	mitochondrial ribosomal protein S6	16		mitochondrial small ribosomal subunit			ISS	P82931 	J:72140 
+MGI:1354367	Mrps7	mitchondrial ribosomal protein S7	11		mitochondrial small ribosomal subunit			IBA	PTN000128969 	J:265628 
+MGI:1354367	Mrps7	mitchondrial ribosomal protein S7	11		mitochondrial small ribosomal subunit			ISA	X76767 	J:58929 
+MGI:1354367	Mrps7	mitchondrial ribosomal protein S7	11		mitochondrial small ribosomal subunit			ISO	Q9Y2R9 	J:164563 
+MGI:1916777	Mrps9	mitochondrial ribosomal protein S9	1		mitochondrial small ribosomal subunit			IBA	PTN000490921 	J:265628 
+MGI:1916777	Mrps9	mitochondrial ribosomal protein S9	1		small ribosomal subunit			IBA	PTN000490829 	J:265628 
+MGI:1928139	Mrps10	mitochondrial ribosomal protein S10	17		mitochondrial small ribosomal subunit			ISO	P82664 	J:164563 
+MGI:1928139	Mrps10	mitochondrial ribosomal protein S10	17		mitochondrial small ribosomal subunit			ISS		J:65190 
+MGI:1915244	Mrps11	mitochondrial ribosomal protein S11	7		cytosolic small ribosomal subunit			IBA	PTN000205040 	J:265628 
+MGI:1915244	Mrps11	mitochondrial ribosomal protein S11	7		mitochondrial small ribosomal subunit			ISO	P82912 	J:164563 J:175816 
+MGI:1915244	Mrps11	mitochondrial ribosomal protein S11	7		mitochondrial small ribosomal subunit			ISS	P82911 	J:72140 
+MGI:1346333	Mrps12	mitochondrial ribosomal protein S12	7		mitochondrial small ribosomal subunit			ISO	O15235 	J:164563 
+MGI:1346333	Mrps12	mitochondrial ribosomal protein S12	7		mitochondrial small ribosomal subunit			ISS	Q29RU1 	J:72140 
+MGI:1346333	Mrps12	mitochondrial ribosomal protein S12	7		small ribosomal subunit			IEA	IPR005679 	J:72247 
+MGI:1928141	Mrps14	mitochondrial ribosomal protein S14	1		mitochondrial small ribosomal subunit			IBA	PTN000457005 	J:265628 
+MGI:1928141	Mrps14	mitochondrial ribosomal protein S14	1		mitochondrial small ribosomal subunit			ISO	O60783 	J:164563 
+MGI:1928141	Mrps14	mitochondrial ribosomal protein S14	1		mitochondrial small ribosomal subunit			ISS		J:65190 
+MGI:1928141	Mrps14	mitochondrial ribosomal protein S14	1		small ribosomal subunit			IBA	PTN000457003 	J:265628 
+MGI:1913657	Mrps15	mitochondrial ribosomal protein S15	4		mitochondrial small ribosomal subunit			ISO	P82914 	J:164563 
+MGI:1913657	Mrps15	mitochondrial ribosomal protein S15	4		mitochondrial small ribosomal subunit			ISS	P82913 	J:72140 
+MGI:1913492	Mrps16	mitochondrial ribosomal protein S16	14		mitochondrial small ribosomal subunit			IBA	PTN000308746 	J:265628 
+MGI:1913492	Mrps16	mitochondrial ribosomal protein S16	14		mitochondrial small ribosomal subunit			ISO	Q9Y3D3 	J:164563 
+MGI:1913492	Mrps16	mitochondrial ribosomal protein S16	14		mitochondrial small ribosomal subunit			ISS	P82915 	J:72140 
+MGI:1913492	Mrps16	mitochondrial ribosomal protein S16	14		small ribosomal subunit			IBA	PTN000308744 	J:265628 
+MGI:1913508	Mrps17	mitochondrial ribosomal protein S17	5		mitochondrial small ribosomal subunit			IBA	PTN000639784 	J:265628 
+MGI:1913508	Mrps17	mitochondrial ribosomal protein S17	5		mitochondrial small ribosomal subunit			ISO	Q9Y2R5 	J:164563 
+MGI:1913508	Mrps17	mitochondrial ribosomal protein S17	5		mitochondrial small ribosomal subunit			ISS	Q9Y2R5 	J:72140 
+MGI:1915815	Mrps18a	mitochondrial ribosomal protein S18A	17		mitochondrial large ribosomal subunit			ISO	Q9NVS2 	J:164563 
+MGI:1915815	Mrps18a	mitochondrial ribosomal protein S18A	17		mitochondrial small ribosomal subunit			IBA	PTN000336667 	J:265628 
+MGI:1915815	Mrps18a	mitochondrial ribosomal protein S18A	17		mitochondrial small ribosomal subunit			ISO	Q9NVS2 	J:164563 
+MGI:1915815	Mrps18a	mitochondrial ribosomal protein S18A	17		mitochondrial small ribosomal subunit			ISS	P82919 	J:72140 
+MGI:1914223	Mrps18b	mitochondrial ribosomal protein S18B	17		mitochondrial small ribosomal subunit			ISO	Q9Y676 	J:164563 
+MGI:1914223	Mrps18b	mitochondrial ribosomal protein S18B	17		mitochondrial small ribosomal subunit			ISS	P82918 	J:72140 
+MGI:1915985	Mrps18c	mitochondrial ribosomal protein S18C	5		mitochondrial small ribosomal subunit			IBA	PTN000336667 	J:265628 
+MGI:1915985	Mrps18c	mitochondrial ribosomal protein S18C	5		mitochondrial small ribosomal subunit			ISO	Q9Y3D5 	J:164563 
+MGI:1913542	Mrps21	mitochondrial ribosomal protein S21	3		mitochondrial small ribosomal subunit			ISO	P82921 	J:164563 
+MGI:1913542	Mrps21	mitochondrial ribosomal protein S21	3		mitochondrial small ribosomal subunit			ISS	P82920 	J:72140 
+MGI:1928137	Mrps22	mitochondrial ribosomal protein S22	9		mitochondrial small ribosomal subunit			IBA	PTN000991170 	J:265628 
+MGI:1928137	Mrps22	mitochondrial ribosomal protein S22	9		mitochondrial small ribosomal subunit			ISO	P82650 	J:65190 
+MGI:1928138	Mrps23	mitochondrial ribosomal protein S23	11		mitochondrial small ribosomal subunit			ISS		J:65190 
+MGI:1928142	Mrps24	mitochondrial ribosomal protein S24	11		mitochondrial small ribosomal subunit			ISS		J:65190 
+MGI:1928140	Mrps25	mitochondrial ribosomal protein S25	6		mitochondrial small ribosomal subunit			ISS		J:65190 
+MGI:1333830	Mrps26	mitochondrial ribosomal protein S26	2		mitochondrial small ribosomal subunit			IBA	PTN001077755 	J:265628 
+MGI:1919064	Mrps27	mitochondrial ribosomal protein S27	13		mitochondrial small ribosomal subunit			ISO	Q92552 	J:164563 
+MGI:1913480	Mrps28	mitochondrial ribosomal protein S28	3		mitochondrial small ribosomal subunit			IBA	PTN001002997 	J:265628 
+MGI:1926237	Mrps30	mitochondrial ribosomal protein S30	13		mitochondrial large ribosomal subunit			IBA	PTN002294086 	J:265628 
+MGI:1926237	Mrps30	mitochondrial ribosomal protein S30	13		mitochondrial large ribosomal subunit			ISO	Q9NP92 	J:164563 
+MGI:1913153	Mrps31	mitochondrial ribosomal protein S31	8		mitochondrial small ribosomal subunit			IEA	IPR026299 	J:72247 
+MGI:1930188	Mrps34	mitochondrial ribosomal protein S34	17		mitochondrial small ribosomal subunit			IBA	PTN002408389 	J:265628 
+MGI:2385255	Mrps35	mitochondrial ribosomal protein S35	6		mitochondrial small ribosomal subunit			IBA	PTN000337133 	J:265628 
+MGI:1913378	Mrps36	mitochondrial ribosomal protein S36	13		mitochondrial small ribosomal subunit			ISO	P82909 	J:164563 
+MGI:102493	mt-Rnr1	mitochondrially encoded 12S rRNA	MT		mitochondrial small ribosomal subunit			TAS		J:22484 
+MGI:102492	mt-Rnr2	mitochondrially encoded 16S rRNA	MT		mitochondrial large ribosomal subunit			TAS		J:22484 
+MGI:1918355	Mterf4	mitochondrial transcription termination factor 4	1		mitochondrial large ribosomal subunit			ISO	Q7Z6M4 	J:175816 
+MGI:1917566	Ndufab1	NADH:ubiquinone oxidoreductase subunit AB1	7	colocalizes_with	mitochondrial large ribosomal subunit			ISO	O14561 	J:164563 
+MGI:106184	Npm1	nucleophosmin 1	11		large ribosomal subunit			IDA		J:142821 
+MGI:106184	Npm1	nucleophosmin 1	11		small ribosomal subunit			IDA		J:142821 
+MGI:2146565	Nsun3	NOL1/NOP2/Sun domain family member 3	16		mitochondrial large ribosomal subunit			IBA	PTN000516152 	J:265628 
+MGI:1919431	Nsun4	NOL1/NOP2/Sun domain family, member 4	4		mitochondrial large ribosomal subunit			ISO	Q96CB9 	J:175816 
+MGI:101849	Rack1	receptor for activated C kinase 1	11		cytosolic small ribosomal subunit			IBA	PTN000458645 	J:265628 
+MGI:101849	Rack1	receptor for activated C kinase 1	11		small ribosomal subunit			ISO	RGD:69229 	J:155856 
+MGI:1099460	Rbm3	RNA binding motif (RNP1, RRM) protein 3	X	colocalizes_with	large ribosomal subunit			IBA	PTN002554641 	J:265628 
+MGI:1099460	Rbm3	RNA binding motif (RNP1, RRM) protein 3	X	colocalizes_with	large ribosomal subunit			ISO	RGD:620145 	J:155856 
+MGI:1351605	Rpl3	ribosomal protein L3	15		cytosolic large ribosomal subunit			IBA	PTN000146039 	J:265628 
+MGI:1351605	Rpl3	ribosomal protein L3	15		cytosolic large ribosomal subunit			ISO	RGD:735105 	J:155856 
+MGI:1913461	Rpl3l	ribosomal protein L3-like	17		cytosolic large ribosomal subunit			IBA	PTN000146039 	J:265628 
+MGI:1915141	Rpl4	ribosomal protein L4	9		cytosolic large ribosomal subunit			IBA	PTN000454620 	J:265628 
+MGI:1915141	Rpl4	ribosomal protein L4	9		cytosolic large ribosomal subunit			ISO	RGD:619824 	J:155856 
+MGI:1915141	Rpl4	ribosomal protein L4	9		large ribosomal subunit			ISO	RGD:619824 	J:155856 
+MGI:102854	Rpl5	ribosomal protein L5	5		cytosolic large ribosomal subunit			IBA	PTN000601661 	J:265628 
+MGI:102854	Rpl5	ribosomal protein L5	5		cytosolic large ribosomal subunit			ISO	RGD:619825 	J:155856 
+MGI:108057	Rpl6	ribosomal protein L6	5		cytosolic large ribosomal subunit			IBA	PTN000076315 	J:265628 
+MGI:108057	Rpl6	ribosomal protein L6	5		cytosolic large ribosomal subunit			ISO	RGD:619826 	J:155856 
+MGI:108057	Rpl6	ribosomal protein L6	5		cytosolic large ribosomal subunit			ISO	Q02878 	J:164563 
+MGI:98073	Rpl7	ribosomal protein L7	1		cytosolic large ribosomal subunit			IBA	PTN000897517 	J:265628 
+MGI:98073	Rpl7	ribosomal protein L7	1		cytosolic large ribosomal subunit			IDA		J:9681 
+MGI:98073	Rpl7	ribosomal protein L7	1		cytosolic large ribosomal subunit			ISO	RGD:735169 	J:155856 
+MGI:1353472	Rpl7a	ribosomal protein L7A	2		cytosolic large ribosomal subunit			IBA	PTN000559990 	J:265628 
+MGI:1353472	Rpl7a	ribosomal protein L7A	2		cytosolic large ribosomal subunit			ISO	RGD:1307586 	J:155856 
+MGI:1913479	Rpl7l1	ribosomal protein L7-like 1	17		cytosolic large ribosomal subunit			IBA	PTN000897517 	J:265628 
+MGI:1350927	Rpl8	ribosomal protein L8	15		cytosolic large ribosomal subunit			IBA	PTN000343558 	J:265628 
+MGI:1350927	Rpl8	ribosomal protein L8	15		cytosolic large ribosomal subunit			ISO	P62917 	J:164563 
+MGI:1350927	Rpl8	ribosomal protein L8	15		large ribosomal subunit			IEA	IPR023672 	J:72247 
+MGI:1298373	Rpl9	ribosomal protein L9	5		cytosolic large ribosomal subunit			IBA	PTN000183647 	J:265628 
+MGI:1298373	Rpl9	ribosomal protein L9	5		cytosolic large ribosomal subunit			IDA		J:49488 
+MGI:1298373	Rpl9	ribosomal protein L9	5		cytosolic large ribosomal subunit			ISO	RGD:62049 	J:155856 
+MGI:105943	Rpl10	ribosomal protein L10	X		cytosolic large ribosomal subunit			IBA	PTN000197715 	J:265628 
+MGI:105943	Rpl10	ribosomal protein L10	X		cytosolic large ribosomal subunit			ISO	RGD:621178 	J:155856 
+MGI:105943	Rpl10	ribosomal protein L10	X		cytosolic large ribosomal subunit			ISO	P27635 	J:73065 
+MGI:1343877	Rpl10a	ribosomal protein L10A	17		cytosolic large ribosomal subunit			IBA	PTN000559990 	J:265628 
+MGI:1343877	Rpl10a	ribosomal protein L10A	17		cytosolic large ribosomal subunit			ISO	RGD:620497 	J:155856 
+MGI:1343877	Rpl10a	ribosomal protein L10A	17		cytosolic large ribosomal subunit			ISO	P62906 	J:164563 
+MGI:1343877	Rpl10a	ribosomal protein L10A	17		large ribosomal subunit			IEA	IPR002143 	J:72247 
+MGI:3647985	Rpl10l	ribosomal protein L10-like	12		cytosolic large ribosomal subunit			IBA	PTN000197715 	J:265628 
+MGI:3647985	Rpl10l	ribosomal protein L10-like	12		cytosolic large ribosomal subunit	is a part of testis		IDA		J:197929 
+MGI:1914275	Rpl11	ribosomal protein L11	4		cytosolic large ribosomal subunit			IBA	PTN000242048 	J:265628 
+MGI:1914275	Rpl11	ribosomal protein L11	4		cytosolic large ribosomal subunit			ISO	RGD:1308681 	J:155856 
+MGI:1914275	Rpl11	ribosomal protein L11	4		cytosolic large ribosomal subunit			ISO	P62913 	J:164563 
+MGI:98002	Rpl12	ribosomal protein L12	2		cytosolic large ribosomal subunit			IBA	PTN000184010 	J:265628 
+MGI:98002	Rpl12	ribosomal protein L12	2		cytosolic large ribosomal subunit			ISO	RGD:1565106 	J:155856 
+MGI:98002	Rpl12	ribosomal protein L12	2		large ribosomal subunit			IBA	PTN000184007 	J:265628 
+MGI:105922	Rpl13	ribosomal protein L13	8		cytosolic large ribosomal subunit			IBA	PTN000197497 	J:265628 
+MGI:105922	Rpl13	ribosomal protein L13	8		cytosolic large ribosomal subunit			ISO	RGD:621179 	J:155856 
+MGI:1351455	Rpl13a	ribosomal protein L13A	7		cytosolic large ribosomal subunit			IBA	PTN000166703 	J:265628 
+MGI:1351455	Rpl13a	ribosomal protein L13A	7		cytosolic large ribosomal subunit			ISO	RGD:628697 	J:155856 
+MGI:1351455	Rpl13a	ribosomal protein L13A	7		large ribosomal subunit			IEA	IPR005755 	J:72247 
+MGI:1914365	Rpl14	ribosomal protein L14	9		cytosolic large ribosomal subunit			IBA	PTN000874665 	J:265628 
+MGI:1914365	Rpl14	ribosomal protein L14	9		cytosolic large ribosomal subunit			ISO	RGD:621180 	J:155856 
+MGI:1913730	Rpl15	ribosomal protein L15	14		cytosolic large ribosomal subunit			IBA	PTN000217960 	J:265628 
+MGI:1913730	Rpl15	ribosomal protein L15	14		cytosolic large ribosomal subunit			ISO	RGD:621181 	J:155856 
+MGI:2448270	Rpl17	ribosomal protein L17	18		cytosolic large ribosomal subunit			IBA	PTN000174131 	J:265628 
+MGI:2448270	Rpl17	ribosomal protein L17	18		cytosolic large ribosomal subunit			ISO	RGD:1303019 	J:155856 
+MGI:2448270	Rpl17	ribosomal protein L17	18		large ribosomal subunit			IEA	IPR005721 	J:72247 
+MGI:98003	Rpl18	ribosomal protein L18	7		cytosolic large ribosomal subunit			IBA	PTN000859219 	J:265628 
+MGI:98003	Rpl18	ribosomal protein L18	7		cytosolic large ribosomal subunit			ISO	RGD:621182 	J:155856 
+MGI:98003	Rpl18	ribosomal protein L18	7		cytosolic large ribosomal subunit			ISO	Q07020 	J:164563 
+MGI:1924058	Rpl18a	ribosomal protein L18A	8		cytosolic large ribosomal subunit			IBA	PTN000006274 	J:265628 
+MGI:1924058	Rpl18a	ribosomal protein L18A	8		cytosolic large ribosomal subunit			ISO	RGD:1302976 	J:155856 
+MGI:1924058	Rpl18a	ribosomal protein L18A	8		cytosolic large ribosomal subunit			ISO	Q02543 	J:164563 
+MGI:98020	Rpl19	ribosomal protein L19	11		cytosolic large ribosomal subunit			IBA	PTN000076564 	J:265628 
+MGI:98020	Rpl19	ribosomal protein L19	11		cytosolic large ribosomal subunit			IDA		J:31514 
+MGI:98020	Rpl19	ribosomal protein L19	11		cytosolic large ribosomal subunit	is a part of testis		IDA		J:197929 
+MGI:98020	Rpl19	ribosomal protein L19	11		cytosolic large ribosomal subunit			ISO	RGD:621183 	J:155856 
+MGI:98020	Rpl19	ribosomal protein L19	11		cytosolic large ribosomal subunit			ISO	P84098 	J:164563 
+MGI:1278340	Rpl21	ribosomal protein L21	5		cytosolic large ribosomal subunit			IBA	PTN001463935 	J:265628 
+MGI:1278340	Rpl21	ribosomal protein L21	5		cytosolic large ribosomal subunit			ISO	RGD:68390 	J:155856 
+MGI:99262	Rpl22	ribosomal protein L22	4		cytosolic large ribosomal subunit			ISO	RGD:621189 	J:155856 
+MGI:1929455	Rpl23	ribosomal protein L23	11		cytosolic large ribosomal subunit			IBA	PTN000205184 	J:265628 
+MGI:1929455	Rpl23	ribosomal protein L23	11		cytosolic large ribosomal subunit			ISO	RGD:62067 	J:155856 
+MGI:3040672	Rpl23a	ribosomal protein L23A	11		cytosolic large ribosomal subunit			IBA	PTN000178698 	J:265628 
+MGI:3040672	Rpl23a	ribosomal protein L23A	11		cytosolic large ribosomal subunit			ISO	RGD:1304897 	J:155856 
+MGI:1915443	Rpl24	ribosomal protein L24	16		cytosolic large ribosomal subunit			IBA	PTN000846433 	J:265628 
+MGI:1915443	Rpl24	ribosomal protein L24	16		cytosolic large ribosomal subunit			ISO	P83732 	J:73065 
+MGI:1915443	Rpl24	ribosomal protein L24	16		cytosolic large ribosomal subunit			ISO	P83731 	J:164563 
+MGI:106022	Rpl26	ribosomal protein L26	11		cytosolic large ribosomal subunit			IBA	PTN000124940 	J:265628 
+MGI:106022	Rpl26	ribosomal protein L26	11		cytosolic large ribosomal subunit			ISO	RGD:1310607 	J:155856 
+MGI:98036	Rpl27	ribosomal protein L27	11		cytosolic large ribosomal subunit			IBA	PTN000052145 	J:265628 
+MGI:98036	Rpl27	ribosomal protein L27	11		cytosolic large ribosomal subunit			ISO	RGD:621192 	J:155856 
+MGI:1347076	Rpl27a	ribosomal protein L27A	7		cytosolic large ribosomal subunit			IBA	PTN000197373 	J:265628 
+MGI:1347076	Rpl27a	ribosomal protein L27A	7		cytosolic large ribosomal subunit			ISO	RGD:1309771 	J:155856 
+MGI:1347076	Rpl27a	ribosomal protein L27A	7		large ribosomal subunit			IEA	IPR030878 	J:72247 
+MGI:101839	Rpl28	ribosomal protein L28	7		cytosolic large ribosomal subunit			IBA	PTN000057380 	J:265628 
+MGI:101839	Rpl28	ribosomal protein L28	7		cytosolic large ribosomal subunit			ISO	RGD:621193 	J:155856 
+MGI:99687	Rpl29	ribosomal protein L29	9		cytosolic large ribosomal subunit			IBA	PTN000306390 	J:265628 
+MGI:99687	Rpl29	ribosomal protein L29	9		cytosolic large ribosomal subunit			ISO	RGD:62069 	J:155856 
+MGI:98037	Rpl30	ribosomal protein L30	15		cytosolic large ribosomal subunit			IBA	PTN000154874 	J:265628 
+MGI:98037	Rpl30	ribosomal protein L30	15		cytosolic large ribosomal subunit			ISO	RGD:621201 	J:155856 
+MGI:98037	Rpl30	ribosomal protein L30	15		cytosolic large ribosomal subunit			ISO	P62888 	J:164563 
+MGI:2149632	Rpl31	ribosomal protein L31	1		cytosolic large ribosomal subunit			IBA	PTN000102776 	J:265628 
+MGI:2149632	Rpl31	ribosomal protein L31	1		cytosolic large ribosomal subunit			ISO	RGD:621202 	J:155856 
+MGI:2149632	Rpl31	ribosomal protein L31	1		cytosolic large ribosomal subunit			ISO	P62899 	J:164563 
+MGI:98038	Rpl32	ribosomal protein L32	6		cytosolic large ribosomal subunit			IBA	PTN000601894 	J:265628 
+MGI:98038	Rpl32	ribosomal protein L32	6		cytosolic large ribosomal subunit			IDA		J:31514 
+MGI:98038	Rpl32	ribosomal protein L32	6		cytosolic large ribosomal subunit			ISO	RGD:621203 	J:155856 
+MGI:3644747	Rpl32l	ribosomal protein L32-like	10		cytosolic large ribosomal subunit			ISO	P62910 	J:164563 
+MGI:1915686	Rpl34	ribosomal protein L34	3		cytosolic large ribosomal subunit			ISO	RGD:1309402 	J:155856 
+MGI:1913739	Rpl35	ribosomal protein L35	2		cytosolic large ribosomal subunit			IBA	PTN000356124 	J:265628 
+MGI:1913739	Rpl35	ribosomal protein L35	2		cytosolic large ribosomal subunit			ISO	RGD:1303007 	J:155856 
+MGI:1928894	Rpl35a	ribosomal protein L35A	16		cytosolic large ribosomal subunit			IBA	PTN000096770 	J:265628 
+MGI:1928894	Rpl35a	ribosomal protein L35A	16		cytosolic large ribosomal subunit			ISO	RGD:2323795 	J:155856 
+MGI:1860603	Rpl36	ribosomal protein L36	17		cytosolic large ribosomal subunit			IBA	PTN000012121 	J:265628 
+MGI:1201789	Rpl36a	ribosomal protein L36A	X		cytosolic large ribosomal subunit			IBA	PTN000042522 	J:265628 
+MGI:1201789	Rpl36a	ribosomal protein L36A	X		cytosolic large ribosomal subunit			ISO	RGD:1306640 	J:155856 
+MGI:1914531	Rpl37	ribosomal protein L37	15		cytosolic large ribosomal subunit			IBA	PTN000080456 	J:265628 
+MGI:1914531	Rpl37	ribosomal protein L37	15		cytosolic large ribosomal subunit			ISO	RGD:621204 	J:155856 
+MGI:98068	Rpl37a	ribosomal protein L37a	1		cytosolic large ribosomal subunit			ISO	RGD:2319947 	J:155856 
+MGI:1914921	Rpl38	ribosomal protein L38	11		cytosolic large ribosomal subunit			IBA	PTN000103359 	J:265628 
+MGI:1914921	Rpl38	ribosomal protein L38	11		cytosolic large ribosomal subunit			ISO	P63173 	J:164563 
+MGI:1914498	Rpl39	ribosomal protein L39	X		cytosolic large ribosomal subunit			IBA	PTN000463054 	J:265628 
+MGI:1914498	Rpl39	ribosomal protein L39	X		cytosolic large ribosomal subunit			ISO	RGD:3593 	J:155856 
+MGI:1914498	Rpl39	ribosomal protein L39	X		cytosolic large ribosomal subunit			ISO	P62891 	J:164563 
+MGI:1915422	Rpl39l	ribosomal protein L39-like	16		cytosolic large ribosomal subunit			IBA	PTN000463054 	J:265628 
+MGI:1927636	Rplp0	ribosomal protein, large, P0	5		cytosolic large ribosomal subunit			IBA	PTN000474664 	J:265628 
+MGI:1927636	Rplp0	ribosomal protein, large, P0	5		cytosolic large ribosomal subunit			ISO	P05388 	J:164563 
+MGI:1927099	Rplp1	ribosomal protein, large, P1	9		cytosolic large ribosomal subunit			IBA	PTN000474938 	J:265628 
+MGI:1914436	Rplp2	ribosomal protein, large P2	7		cytosolic large ribosomal subunit			ISO	P05387 	J:164563 
+MGI:105110	Rps2	ribosomal protein S2	17		cytosolic small ribosomal subunit			IBA	PTN000346706 	J:265628 
+MGI:105110	Rps2	ribosomal protein S2	17		cytosolic small ribosomal subunit			ISO	RGD:619887 	J:155856 
+MGI:105110	Rps2	ribosomal protein S2	17		cytosolic small ribosomal subunit			ISO	P15880 	J:164563 
+MGI:105110	Rps2	ribosomal protein S2	17		small ribosomal subunit			IEA	IPR005711 	J:72247 
+MGI:1350917	Rps3	ribosomal protein S3	7		cytosolic small ribosomal subunit			IBA	PTN000205057 	J:265628 
+MGI:1350917	Rps3	ribosomal protein S3	7		cytosolic small ribosomal subunit			ISO	P23396 	J:164563 
+MGI:1350917	Rps3	ribosomal protein S3	7		cytosolic small ribosomal subunit			ISO	RGD:619888 	J:155856 
+MGI:1350917	Rps3	ribosomal protein S3	7		small ribosomal subunit			IEA	IPR005703 	J:72247 
+MGI:1202063	Rps3a1	ribosomal protein S3A1	3		cytosolic small ribosomal subunit			ISO	RGD:62078 	J:155856 
+MGI:1202063	Rps3a1	ribosomal protein S3A1	3		small ribosomal subunit			ISO	RGD:62078 	J:155856 
+MGI:1913434	Rps4l	ribosomal protein S4-like	6		cytosolic small ribosomal subunit	is a part of testis		IDA		J:197929 
+MGI:98158	Rps4x	ribosomal protein S4, X-linked	X		cytosolic small ribosomal subunit			IBA	PTN000171891 	J:265628 
+MGI:98158	Rps4x	ribosomal protein S4, X-linked	X		small ribosomal subunit			ISA	P62701 	J:17377 
+MGI:1097682	Rps5	ribosomal protein S5	7		cytosolic small ribosomal subunit			IBA	PTN000128891 	J:265628 
+MGI:1097682	Rps5	ribosomal protein S5	7		cytosolic small ribosomal subunit			ISO	RGD:3601 	J:155856 
+MGI:1097682	Rps5	ribosomal protein S5	7		cytosolic small ribosomal subunit			ISO	P46782 	J:164563 
+MGI:1097682	Rps5	ribosomal protein S5	7		small ribosomal subunit			IEA	IPR005716 	J:72247 
+MGI:98159	Rps6	ribosomal protein S6	4		cytosolic small ribosomal subunit	is a part of testis		IDA		J:197929 
+MGI:98159	Rps6	ribosomal protein S6	4		cytosolic small ribosomal subunit			ISO	RGD:3602 	J:155856 
+MGI:98159	Rps6	ribosomal protein S6	4		cytosolic small ribosomal subunit			ISO	P62753 	J:164563 
+MGI:98159	Rps6	ribosomal protein S6	4		small ribosomal subunit			ISO	P62753 	J:164563 
+MGI:1333818	Rps7	ribosomal protein S7	12		cytosolic small ribosomal subunit			IBA	PTN000138848 	J:265628 
+MGI:1333818	Rps7	ribosomal protein S7	12		cytosolic small ribosomal subunit			ISO	RGD:61907 	J:155856 
+MGI:1333818	Rps7	ribosomal protein S7	12		cytosolic small ribosomal subunit			ISO	P62081 	J:164563 
+MGI:98166	Rps8	ribosomal protein S8	4		cytosolic small ribosomal subunit			IBA	PTN000044490 	J:265628 
+MGI:98166	Rps8	ribosomal protein S8	4		cytosolic small ribosomal subunit			ISO	RGD:61910 	J:155856 
+MGI:98166	Rps8	ribosomal protein S8	4		cytosolic small ribosomal subunit			ISO	P62241 	J:164563 
+MGI:1924096	Rps9	ribosomal protein S9	7		cytosolic small ribosomal subunit			IBA	PTN000216553 	J:265628 
+MGI:1924096	Rps9	ribosomal protein S9	7		cytosolic small ribosomal subunit			ISO	RGD:619889 	J:155856 
+MGI:1924096	Rps9	ribosomal protein S9	7		cytosolic small ribosomal subunit			ISO	P46781 	J:164563 
+MGI:1924096	Rps9	ribosomal protein S9	7		small ribosomal subunit			IBA	PTN000216478 	J:265628 
+MGI:1914347	Rps10	ribosomal protein S10	17		cytosolic small ribosomal subunit			IBA	PTN000254423 	J:265628 
+MGI:1914347	Rps10	ribosomal protein S10	17		cytosolic small ribosomal subunit			ISO	RGD:621024 	J:155856 
+MGI:1914347	Rps10	ribosomal protein S10	17		cytosolic small ribosomal subunit			ISO	P46783 	J:164563 
+MGI:1351329	Rps11	ribosomal protein S11	7		cytosolic small ribosomal subunit			IBA	PTN000078534 	J:265628 
+MGI:1351329	Rps11	ribosomal protein S11	7		cytosolic small ribosomal subunit			ISO	RGD:621026 	J:155856 
+MGI:1351329	Rps11	ribosomal protein S11	7		cytosolic small ribosomal subunit			ISO	P62280 	J:164563 
+MGI:98105	Rps12	ribosomal protein S12	10		cytosolic large ribosomal subunit			ISO	RGD:62024 	J:155856 
+MGI:98105	Rps12	ribosomal protein S12	10		cytosolic small ribosomal subunit			IBA	PTN000217533 	J:265628 
+MGI:98105	Rps12	ribosomal protein S12	10		cytosolic small ribosomal subunit			ISO	RGD:62024 	J:155856 
+MGI:98105	Rps12	ribosomal protein S12	10		cytosolic small ribosomal subunit			ISO	P25398 	J:164563 
+MGI:1915302	Rps13	ribosomal protein S13	7		cytosolic small ribosomal subunit			IBA	PTN000223267 	J:265628 
+MGI:1915302	Rps13	ribosomal protein S13	7		cytosolic small ribosomal subunit			ISO	P62277 	J:164563 
+MGI:98107	Rps14	ribosomal protein S14	18		cytosolic small ribosomal subunit			IBA	PTN000204886 	J:265628 
+MGI:98107	Rps14	ribosomal protein S14	18		cytosolic small ribosomal subunit			ISO	RGD:62025 	J:155856 
+MGI:98107	Rps14	ribosomal protein S14	18		cytosolic small ribosomal subunit			ISO	P62263 	J:164563 
+MGI:98117	Rps15	ribosomal protein S15	10		cytosolic small ribosomal subunit			IBA	PTN000222938 	J:265628 
+MGI:98117	Rps15	ribosomal protein S15	10		cytosolic small ribosomal subunit			ISO	RGD:62026 	J:155856 
+MGI:98117	Rps15	ribosomal protein S15	10		cytosolic small ribosomal subunit			ISO	P62841 	J:164563 
+MGI:98117	Rps15	ribosomal protein S15	10		small ribosomal subunit			IEA	IPR005713 	J:72247 
+MGI:2389091	Rps15a	ribosomal protein S15A	7		cytosolic small ribosomal subunit			IBA	PTN000204723 	J:265628 
+MGI:2389091	Rps15a	ribosomal protein S15A	7		cytosolic small ribosomal subunit			ISO	RGD:619939 	J:155856 
+MGI:2389091	Rps15a	ribosomal protein S15A	7		cytosolic small ribosomal subunit			ISO	P62244 	J:164563 
+MGI:98118	Rps16	ribosomal protein S16	7		cytosolic small ribosomal subunit			IBA	PTN000490831 	J:265628 
+MGI:98118	Rps16	ribosomal protein S16	7		cytosolic small ribosomal subunit			ISO	RGD:621031 	J:155856 
+MGI:98118	Rps16	ribosomal protein S16	7		cytosolic small ribosomal subunit			ISO	P62249 	J:164563 
+MGI:98118	Rps16	ribosomal protein S16	7		small ribosomal subunit			IBA	PTN000490829 	J:265628 
+MGI:1309526	Rps17	ribosomal protein S17	7		cytosolic small ribosomal subunit			ISO	NM_017152 	J:49833 
+MGI:1309526	Rps17	ribosomal protein S17	7		cytosolic small ribosomal subunit			ISO	P08708 	J:164563 
+MGI:98146	Rps18	ribosomal protein S18	17		cytosolic small ribosomal subunit			ISO	RGD:3595 	J:155856 
+MGI:98146	Rps18	ribosomal protein S18	17		cytosolic small ribosomal subunit			ISO	P62269 	J:164563 
+MGI:98146	Rps18	ribosomal protein S18	17		small ribosomal subunit			IBA	PTN000093238 	J:265628 
+MGI:1333780	Rps19	ribosomal protein S19	7		cytosolic small ribosomal subunit			IBA	PTN000194951 	J:265628 
+MGI:1333780	Rps19	ribosomal protein S19	7		cytosolic small ribosomal subunit			ISO	P39019 	J:164563 
+MGI:1914677	Rps20	ribosomal protein S20	4		cytosolic small ribosomal subunit			IBA	PTN000193513 	J:265628 
+MGI:1914677	Rps20	ribosomal protein S20	4		cytosolic small ribosomal subunit			ISO	RGD:621037 	J:155856 
+MGI:1914677	Rps20	ribosomal protein S20	4		cytosolic small ribosomal subunit			ISO	P60866 	J:164563 
+MGI:1914677	Rps20	ribosomal protein S20	4		small ribosomal subunit			IBA	PTN000193512 	J:265628 
+MGI:1913731	Rps21	ribosomal protein S21	2		cytosolic small ribosomal subunit			IBA	PTN000047682 	J:265628 
+MGI:1913731	Rps21	ribosomal protein S21	2		cytosolic small ribosomal subunit			ISO	RGD:621038 	J:155856 
+MGI:1913731	Rps21	ribosomal protein S21	2		cytosolic small ribosomal subunit			ISO	P63220 	J:164563 
+MGI:1913725	Rps23	ribosomal protein S23	13		cytosolic small ribosomal subunit			IBA	PTN000183001 	J:265628 
+MGI:1913725	Rps23	ribosomal protein S23	13		cytosolic small ribosomal subunit			ISO	RGD:621039 	J:155856 
+MGI:1913725	Rps23	ribosomal protein S23	13		cytosolic small ribosomal subunit			ISO	P62266 	J:164563 
+MGI:1913725	Rps23	ribosomal protein S23	13		small ribosomal subunit			ISO	RGD:621039 	J:155856 
+MGI:98147	Rps24	ribosomal protein S24	14		cytosolic small ribosomal subunit			ISO	RGD:621040 	J:155856 
+MGI:98147	Rps24	ribosomal protein S24	14		cytosolic small ribosomal subunit			ISO	NM_033022 	J:1948 
+MGI:98147	Rps24	ribosomal protein S24	14		cytosolic small ribosomal subunit			ISO	P62847 	J:164563 
+MGI:98147	Rps24	ribosomal protein S24	14		small ribosomal subunit			ISO	RGD:621040 	J:155856 
+MGI:1922867	Rps25	ribosomal protein S25	9		cytosolic small ribosomal subunit			IBA	PTN000982949 	J:265628 
+MGI:1922867	Rps25	ribosomal protein S25	9		cytosolic small ribosomal subunit			ISO	RGD:621043 	J:155856 
+MGI:1922867	Rps25	ribosomal protein S25	9		cytosolic small ribosomal subunit			ISO	P62851 	J:164563 
+MGI:1351628	Rps26	ribosomal protein S26	10		cytosolic small ribosomal subunit			IBA	PTN000283756 	J:265628 
+MGI:1351628	Rps26	ribosomal protein S26	10		cytosolic small ribosomal subunit			ISO	RGD:621044 	J:155856 
+MGI:1351628	Rps26	ribosomal protein S26	10		cytosolic small ribosomal subunit			ISO	P62854 	J:164563 
+MGI:1888676	Rps27	ribosomal protein S27	3		cytosolic small ribosomal subunit			IBA	PTN000174285 	J:265628 
+MGI:1925544	Rps27a	ribosomal protein S27A	11		cytosolic small ribosomal subunit			IBA	PTN002241455 	J:265628 
+MGI:1925544	Rps27a	ribosomal protein S27A	11		cytosolic small ribosomal subunit			ISO	RGD:6489478 	J:155856 
+MGI:1925544	Rps27a	ribosomal protein S27A	11		cytosolic small ribosomal subunit			ISO	RGD:620240 	J:155856 
+MGI:1925544	Rps27a	ribosomal protein S27A	11		cytosolic small ribosomal subunit			ISO	P62979 	J:164563 
+MGI:1925544	Rps27a	ribosomal protein S27A	11		small ribosomal subunit			IBA	PTN002241455 	J:265628 
+MGI:1915191	Rps27l	ribosomal protein S27-like	9		cytosolic small ribosomal subunit			IBA	PTN000174285 	J:265628 
+MGI:1859516	Rps28	ribosomal protein S28	17		cytosolic small ribosomal subunit			IBA	PTN000080571 	J:265628 
+MGI:1859516	Rps28	ribosomal protein S28	17		cytosolic small ribosomal subunit			ISO	RGD:621046 	J:155856 
+MGI:1859516	Rps28	ribosomal protein S28	17		cytosolic small ribosomal subunit			ISO	P62857 	J:164563 
+MGI:107681	Rps29	ribosomal protein S29	12		cytosolic small ribosomal subunit			IBA	PTN000244187 	J:265628 
+MGI:107681	Rps29	ribosomal protein S29	12		cytosolic small ribosomal subunit			ISO	L31610 	J:35064 
+MGI:107681	Rps29	ribosomal protein S29	12		cytosolic small ribosomal subunit			ISO	RGD:3596 	J:155856 
+MGI:107681	Rps29	ribosomal protein S29	12		cytosolic small ribosomal subunit			ISO	P62273 	J:164563 
+MGI:105381	Rpsa	ribosomal protein SA	9		cytosolic small ribosomal subunit			IBA	PTN000160708 	J:265628 
+MGI:105381	Rpsa	ribosomal protein SA	9		cytosolic small ribosomal subunit			ISO	RGD:71026 	J:155856 
+MGI:105381	Rpsa	ribosomal protein SA	9		cytosolic small ribosomal subunit			ISO	P08865 	J:164563 
+MGI:105381	Rpsa	ribosomal protein SA	9		small ribosomal subunit			IDA		J:41057 
+MGI:2681840	Rsl24d1	ribosomal L24 domain containing 1	9		cytosolic large ribosomal subunit			IBA	PTN000846433 	J:265628 
+MGI:98887	Uba52	ubiquitin A-52 residue ribosomal protein fusion product 1	8		cytosolic large ribosomal subunit			ISO	RGD:68344 	J:155856 
+MGI:98887	Uba52	ubiquitin A-52 residue ribosomal protein fusion product 1	8		cytosolic small ribosomal subunit			IBA	PTN002241455 	J:265628 
+MGI:98887	Uba52	ubiquitin A-52 residue ribosomal protein fusion product 1	8		small ribosomal subunit			IBA	PTN002241455 	J:265628 
+MGI:1919955	Zcchc17	zinc finger, CCHC domain containing 17	4		cytosolic large ribosomal subunit			IDA		J:80171 

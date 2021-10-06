@@ -15,7 +15,7 @@ library(tidyverse)
 ### Trajectory analysis
 
 ```{r loadData}
-seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+seu <- readRDS("../data/seu.QC.batchCorrect.cluster.final.rds")
 ```
 
 ```{r principleCurve}
@@ -109,12 +109,10 @@ p
 
 
 ```{r saveData}
-out.dir <- "tmp/trajectory/"
-dir.create(out.dir)
-saveRDS(p.curve, paste0(out.dir, "p.curve.rds"))
+saveRDS(p.curve, "../data/p.curve.rds")
 
 ## refresh final seurat object
-saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.final.rds")
+saveRDS(seu, "../data/seu.QC.batchCorrect.cluster.final.rds")
 ```
 
 

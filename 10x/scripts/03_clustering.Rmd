@@ -17,7 +17,7 @@ library(tidyverse)
 #### Clustering
 
 ```{r loadData}
-seu <- readRDS("~/data/data3/jarning/seq-data/z541.10X/seu.QC.rds")
+seu <- readRDS("tmp/02.seu.QC.batchCorrect.rds")
 ```
 
 ```{r cluster, fig.width=16, fig.height=10}
@@ -67,7 +67,7 @@ Cluster 10: doublets (early and late spermatocytes)
 Cluster 11: somatics cells
 
 ```{r dropCells}
-`%notin` <- Negate(`%in%`)
+`%notin%` <- Negate(`%in%`)
 seu.filter <- subset(seu, seurat_clusters %notin% c(2,10,11))
 table(seu.filter$orig.ident)
 ```
@@ -83,6 +83,11 @@ seu <- RunFastMNN(object.list = seu.list)
 ```
 
 #### Optimize umap
+
+```{r}
+seu <- readRDS("tmp/03.seu.rds")
+```
+
 
 ```{r umap}
 dir.create("tmp/umap")
@@ -192,6 +197,7 @@ seu$seurat_clusters <- seu$RNA_snn_res.0.4
 
 ## reorder clusters
 clusters.reorder <- c(21,17,15,18,10,13,12,16,4,11,2,7,22,5,0,1,9,3,14,8,6,23,19,20,24)
+
 seu$seurat_clusters.reorder <- plyr::mapvalues(seu$seurat_clusters, from = clusters.reorder, to = seq_along(clusters.reorder))
 seu$seurat_clusters.reorder <- factor(seu$seurat_clusters.reorder, levels = seq_along(clusters.reorder))
 ```
@@ -201,9 +207,8 @@ DimPlot(seu, group.by = "seurat_clusters.reorder", label = T, label.size = 7) + 
 ```
 
 ```{r saveData}
-saveRDS(seu, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.batchCorrect.cluster.rds")
+saveRDS(seu, "tmp/03.seu.QC.batchCorrect.cluster.rds")
 ```
-
 
 
 ```{r info}

@@ -48,7 +48,9 @@ seu$QC <- ifelse(seu$percent.mt<=10 & seu$nFeature_RNA>=1000, "pass", "fail")
 seu@meta.data %>% as_tibble() %>% count(orig.ident, QC)
 seu.filter <- subset(seu, QC == "pass")
 
-saveRDS(seu.filter, "~/data/data3/jarning/seq-data/z541.10X/seu.QC.rds")
+## save data
+dir.create("tmp")
+saveRDS(seu.filter, "tmp/01.seu.QC.rds")
 ```
 
 ```{r info}
