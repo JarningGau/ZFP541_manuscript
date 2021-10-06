@@ -13,10 +13,12 @@ library(tidyverse)
 
 #### Cell annotation
 
+> To be noted, the umap and clustering results may be minor different from which in the paper due to the random seed. To make the following results repeatable, users should adjust the `clusters.annotations.txt` file or download the original `03.seu.QC.batchCorrect.cluster.rds` file. (see `00_download.sh`)
+
 ```{r loadData}
 seu <- readRDS("tmp/03.seu.QC.batchCorrect.cluster.rds")
+seu <- subset(seu, orig.ident != "K19")
 ```
-
 
 ```{r annotation, fig.width=10, fig.height=5}
 cluster.annotation <- read_tsv("../data/clusters.annotations.txt")

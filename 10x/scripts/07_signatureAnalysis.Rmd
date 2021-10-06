@@ -19,7 +19,7 @@ To systermatic explore the disrupted transcritional programs after Zfp541 knocko
 #### Calculate gene module score
 
 ```{r load Data}
-seu <- readRDS("../seu.QC.batchCorrect.cluster.final.rds")
+seu <- readRDS("../data/seu.QC.batchCorrect.cluster.final.rds")
 seu$orig.ident <- factor(seu$orig.ident, levels = c("WT","Z541"))
 seu$genotype <- plyr::mapvalues(seu$orig.ident, c("WT","Z541"), c("WT", "Zfp541(-/-)"))
 

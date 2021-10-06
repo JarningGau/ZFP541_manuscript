@@ -16,7 +16,8 @@ library(tidyverse)
 ```{r loadData}
 data.mtx <- list(
   WT = Read10X("../data/matrix/WT/"),
-  Z541 = Read10X("../data/matrix/Zfp541/")
+  Z541 = Read10X("../data/matrix/Zfp541/"),
+  K19 = Read10X("../data/matrix/Kctd19/")
 )
 
 for (i in seq_along(data.mtx)) {
